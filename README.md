@@ -17,3 +17,5 @@ Kuch install karne ki zaroorat nahi hai. Phone aur laptop dono par chalta hai.
 
 - `index.html`: poora game (ek hi file)
 - `.nojekyll`: GitHub Pages ko file jaisi hai waisi dikhane ke liye
+- `favicon.ico`: browser tab ka laptop icon
+- `apple-touch-icon.png`: iPhone home screen ka icon
