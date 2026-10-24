@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laptop Seekho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EAF3E8; --surface:#FFFFFF; --stage:#F7FBF5; --ink:#1D2A21; --muted:#56685B;
+  --leaf:#2E7A44; --leaf-ink:#FFFFFF; --mango:#F0AE32; --litchi:#C4423A; --line:#C9D9C5; --lock:#DCE6D9;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121E17; --surface:#1B2A21; --stage:#16241C; --ink:#E8F1EA; --muted:#A3B6A8;
+    --leaf:#5BBE78; --leaf-ink:#0E1A12; --mango:#F2C05A; --litchi:#E86A60; --line:#2D4235; --lock:#22332A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121E17; --surface:#1B2A21; --stage:#16241C; --ink:#E8F1EA; --muted:#A3B6A8;
+  --leaf:#5BBE78; --leaf-ink:#0E1A12; --mango:#F2C05A; --litchi:#E86A60; --line:#2D4235; --lock:#22332A; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Baloo 2","Noto Sans Devanagari","Nirmala UI","Segoe UI",system-ui,sans-serif;font-size:20px;line-height:1.45}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--mango);outline-offset:3px}
+.wrap{max-width:1060px;margin:0 auto;padding:20px 20px 60px}
+[hidden]{display:none !important}
+
+.langs{display:flex;gap:6px;justify-content:flex-end}
+.langs button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 16px;cursor:pointer;font-weight:700;font-size:17px}
+.langs button.on{background:var(--leaf);border-color:var(--leaf);color:var(--leaf-ink)}
+.hero{padding:16px 0 8px}
+.hero h1{font-size:clamp(44px,8vw,84px);line-height:.98;margin:0;font-weight:800;letter-spacing:-.01em}
+.hero h1 span{display:block;color:var(--leaf)}
+.hero p{max-width:34em;color:var(--muted);margin:14px 0 0;font-size:21px}
+.tip{margin:22px 0 6px;padding:14px 18px;border-left:6px solid var(--mango);background:var(--surface);border-radius:0 14px 14px 0;font-size:18px;max-width:44em}
+.week{margin-top:34px}
+.week h2{font-size:26px;margin:0 0 4px;font-weight:800}
+.week .sub{color:var(--muted);margin:0 0 14px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.tile{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:18px;padding:14px 16px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-height:132px;transition:transform .12s,border-color .12s}
+.tile:hover{transform:translateY(-2px);border-color:var(--leaf)}
+.tile .num{font-size:15px;color:var(--muted);font-weight:600}
+.tile .ic{font-size:34px;line-height:1.1}
+.tile .t{font-weight:700;font-size:20px;line-height:1.2}
+.tile .stars{margin-top:auto;font-size:18px;letter-spacing:2px;color:var(--mango)}
+.tile.locked{background:var(--lock);cursor:not-allowed;opacity:.75}
+.tile.locked:hover{transform:none;border-color:var(--line)}
+.tile.done{border-color:var(--leaf)}
+.foot{margin-top:46px;display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:16px;align-items:center}
+.link{background:none;border:none;text-decoration:underline;cursor:pointer;color:var(--muted);padding:4px}
+
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{border:none;border-radius:999px;padding:10px 22px;font-weight:700;cursor:pointer;background:var(--leaf);color:var(--leaf-ink);font-size:19px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.lvl-title{font-size:30px;font-weight:800;margin:14px 0 0;line-height:1.15}
+.task{font-size:24px;font-weight:700;margin:8px 0 2px;min-height:1.4em}
+.fb{min-height:1.6em;font-size:19px;color:var(--muted)}
+.fb.bad{color:var(--litchi);font-weight:600}
+.fb.good{color:var(--leaf);font-weight:600}
+.track{height:12px;background:var(--line);border-radius:999px;overflow:hidden;flex:1;min-width:120px}
+.track i{display:block;height:100%;width:0;background:var(--mango);transition:width .3s}
+.count{font-weight:700;font-size:18px;min-width:3.5em;text-align:right}
+.stage{margin-top:14px;background:var(--stage);border:2px solid var(--line);border-radius:22px;position:relative;min-height:200px}
+.stage.arena{height:min(62vh,520px);overflow:hidden;user-select:none;touch-action:none}
+.stage.pad{padding:22px}
+
+.fruit{position:absolute;border:none;background:transparent;cursor:pointer;padding:0;display:grid;place-items:center;border-radius:50%;line-height:1}
+.fruit:hover{background:rgba(240,174,50,.18)}
+.fruit.pop{transform:scale(1.4);opacity:0;transition:.2s}
+.box{position:absolute;width:120px;height:110px;border-radius:16px;border:3px solid #9A6A33;background:#C99558;color:#3B2511;font-size:20px;font-weight:800;cursor:pointer;display:grid;place-items:center;line-height:1.1;text-align:center}
+.box.open{background:#F3E2C4;font-size:58px}
+.menu{position:absolute;background:var(--surface);color:var(--ink);border:2px solid var(--line);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.25);padding:6px;z-index:9;min-width:190px}
+.menu button{display:block;width:100%;text-align:left;background:none;border:none;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:19px}
+.menu button:hover{background:var(--bg)}
+.menu button:disabled{opacity:.4;cursor:default}
+.item{position:absolute;width:70px;height:70px;font-size:48px;display:grid;place-items:center;cursor:grab;border-radius:50%;touch-action:none;user-select:none;z-index:2}
+.item.drag{cursor:grabbing;z-index:4;transform:scale(1.15)}
+.item.back{transition:left .25s,top .25s}
+.baskets{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:12px}
+.basket{flex:1;height:130px;border:3px dashed #9A6A33;border-radius:18px;background:rgba(201,149,88,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;text-align:center}
+.basket b{font-size:40px;line-height:1}
+.basket.hit{background:rgba(46,122,68,.22);border-color:var(--leaf)}
+.list{height:min(58vh,440px);overflow-y:auto;padding:8px;border-radius:20px}
+.row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;background:var(--surface);margin:0 0 8px;border-radius:12px;padding:10px 16px;cursor:pointer;font-size:21px}
+.row:hover{outline:2px solid var(--mango)}
+.row span{font-size:28px;width:1.4em;text-align:center}
+
+/* painting */
+.paint{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.paint .canvas{flex:2 1 320px;max-width:620px;border-radius:14px;overflow:hidden;border:2px solid var(--line);line-height:0}
+.paint .sample{flex:1 1 150px;max-width:230px;font-size:17px;color:var(--muted)}
+.paint .sample svg{border-radius:10px;border:2px solid var(--line);display:block;margin-top:4px}
+.rg{cursor:pointer;stroke:#2B2B2B;stroke-width:2}
+.pal{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.sw{display:flex;align-items:center;gap:8px;border:3px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px 5px 5px;cursor:pointer;font-size:18px}
+.sw i{width:32px;height:32px;border-radius:50%;display:block;border:2px solid rgba(0,0,0,.25)}
+.sw.on{border-color:var(--ink)}
+
+.big{font-size:min(28vw,170px);font-weight:800;line-height:1;text-align:center;margin:4px 0 14px;color:var(--leaf)}
+.kb{display:flex;flex-direction:column;gap:7px;align-items:center}
+.kb div{display:flex;gap:7px}
+.kb div:nth-child(2){margin-left:22px}
+.kb div:nth-child(3){margin-left:48px}
+.key{width:46px;height:46px;border-radius:9px;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-weight:700;font-size:19px}
+.key.hl{background:var(--mango);border-color:var(--mango);color:#2A1C04}
+.key.ok{background:var(--leaf);border-color:var(--leaf);color:var(--leaf-ink)}
+.cap{display:inline-block;min-width:140px;padding:22px 30px;border-radius:16px;font-size:40px;font-weight:800;background:var(--surface);border:3px solid var(--line);border-bottom-width:9px;text-align:center}
+.center{text-align:center}
+.word{font-size:58px;font-weight:800;letter-spacing:.06em;margin:4px 0}
+.word .ok{color:var(--leaf)} .word .no{color:var(--litchi);text-decoration:underline}
+.mean{font-size:20px;color:var(--muted)}
+.inp{font:inherit;font-size:30px;padding:10px 16px;border-radius:14px;border:3px solid var(--line);background:var(--surface);color:var(--ink);width:min(420px,100%);text-align:center}
+.inp:focus{border-color:var(--leaf);outline:none}
+textarea.inp{text-align:left;font-size:22px;width:100%;min-height:86px;resize:vertical}
+.lbl{font-weight:700;margin:12px 0 4px;display:block}
+.steps{margin:16px 0 0;padding:0;list-style:none}
+.steps li{padding:5px 0 5px 38px;position:relative;color:var(--muted)}
+.steps li::before{content:"";position:absolute;left:6px;top:11px;width:20px;height:20px;border-radius:50%;border:2px solid var(--line)}
+.steps li.now{color:var(--ink);font-weight:700}
+.steps li.now::before{border-color:var(--mango);background:var(--mango)}
+.steps li.did{color:var(--leaf)}
+.steps li.did::before{border-color:var(--leaf);background:var(--leaf)}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 18px;cursor:pointer;font-size:20px}
+.opt:hover{border-color:var(--mango)}
+.opt.right{border-color:var(--leaf);background:rgba(46,122,68,.15)}
+.opt.wrong{border-color:var(--litchi);background:rgba(196,66,58,.12)}
+.q{font-size:26px;font-weight:800}
+kbd{font-family:inherit;background:var(--surface);border:2px solid var(--line);border-bottom-width:4px;border-radius:7px;padding:0 8px;font-weight:700;color:var(--ink)}
+.chk{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 16px;margin-bottom:12px}
+.chk.did{border-color:var(--leaf)}
+.chk summary{cursor:pointer;font-weight:700;font-size:21px}
+.chk ol{margin:8px 0 10px;padding-left:24px}
+.chk .btn{font-size:17px;padding:8px 18px}
+.note{color:var(--muted);font-size:17px;margin:0 0 14px}
+
+/* pretend desktop */
+.desk{position:relative;height:min(64vh,540px);border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#2E6F8E,#1C4A66);user-select:none}
+.taskbar{position:absolute;left:0;right:0;bottom:0;height:44px;background:rgba(12,22,32,.88);display:flex;align-items:center;justify-content:center;gap:18px;color:#fff;font-size:22px}
+.dicons{position:absolute;left:8px;top:8px;bottom:52px;display:flex;flex-direction:column;flex-wrap:wrap;gap:4px;align-content:flex-start}
+.ico{width:100px;padding:6px 4px;border:2px solid transparent;border-radius:8px;color:#fff;text-align:center;font-size:15px;line-height:1.2;display:flex;flex-direction:column;align-items:center;word-break:break-word;cursor:default}
+.ico .e{font-size:38px;line-height:1.15}
+.ico:hover{background:rgba(255,255,255,.12)}
+.ico.sel{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.7)}
+.win .ico{color:var(--ink)}
+.win .ico:hover{background:rgba(46,122,68,.08)}
+.win .ico.sel{background:rgba(46,122,68,.2);border-color:var(--leaf)}
+.ren{width:94px;font:inherit;font-size:14px;text-align:center;border:2px solid #3B82F6;border-radius:4px;padding:1px 2px;color:#111;background:#fff}
+.win{position:absolute;left:122px;right:14px;top:12px;bottom:56px;background:var(--surface);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;z-index:2}
+.wbar{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--bg);border-bottom:1px solid var(--line)}
+.wbar .p{flex:1;font-weight:700;font-size:17px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wbtn{border:none;background:none;font-size:20px;width:42px;height:36px;border-radius:6px;cursor:pointer;color:var(--ink)}
+.wbtn:hover{background:var(--line)}
+.wbtn:disabled{opacity:.3;cursor:default}
+.wbtn.x:hover{background:#C42B1C;color:#fff}
+.wbody{flex:1;padding:10px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;overflow:auto}
+.empty{color:var(--muted);font-size:17px;padding:10px}
+.player{position:absolute;left:14px;right:14px;top:12px;bottom:56px;background:#000;border-radius:12px;display:flex;flex-direction:column;overflow:hidden;color:#fff;z-index:5}
+.screen{flex:1;display:grid;place-items:center;font-size:72px;overflow:hidden;background:linear-gradient(#1B2A4A,#3C2A52);text-align:center}
+.viewer .screen{background:#F4F4F4;color:#222;font-size:22px;padding:20px}
+.viewer .screen .e{font-size:110px;display:block}
+.mv{animation:float 3s ease-in-out infinite alternate}
+.paused .mv{animation-play-state:paused}
+@keyframes float{from{transform:translateX(-70px)}to{transform:translateX(70px)}}
+.ctl{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#111}
+.ctl button{background:#333;border:none;color:#fff;border-radius:8px;width:50px;height:42px;font-size:20px;cursor:pointer}
+.ctl button:hover{background:#555}
+.ctl .pg{flex:1;height:6px;background:#444;border-radius:9px;overflow:hidden}
+.ctl .pg i{display:block;height:100%;width:0;background:#F0AE32}
+
+.overlay{position:fixed;inset:0;background:rgba(10,20,14,.55);display:grid;place-items:center;z-index:20;padding:20px}
+.card{background:var(--surface);border-radius:24px;padding:28px;max-width:420px;width:100%;text-align:center}
+.card .s{font-size:56px;color:var(--mango);letter-spacing:6px}
+.card h3{font-size:30px;margin:6px 0}
+.card .bar{justify-content:center;margin-top:16px}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+@media (max-width:600px){body{font-size:18px}.key{width:28px;height:36px;font-size:15px}.kb div{gap:4px}.kb div:nth-child(2){margin-left:12px}.kb div:nth-child(3){margin-left:26px}.win{left:8px;right:8px}}
+:root{--link:#1A56C9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--link:#8AB4F8}}
+:root[data-theme="dark"]{--link:#8AB4F8}
+.hud{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.chip{background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px 16px;font-weight:700;font-size:18px}
+.go{margin-top:18px;font-size:22px;padding:12px 28px}
+.world{margin-top:44px}
+.whead{display:flex;align-items:center;gap:14px}
+.whead .badge{font-size:38px;width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:3px dashed var(--line);flex:none;filter:grayscale(1);opacity:.6}
+.whead .badge.got{border:3px solid var(--mango);filter:none;opacity:1}
+.whead h2{margin:0;font-size:28px;line-height:1.1}
+.whead p{margin:2px 0 0;color:var(--muted);font-size:17px}
+.path{display:flex;flex-direction:column;align-items:center;margin-top:14px}
+.stop{display:flex;align-items:center;gap:14px;width:min(100%,360px);border:none;background:none;text-align:left;cursor:pointer;padding:6px 0;transform:translateX(calc(var(--o) * min(16vw,140px)))}
+.stop .node{width:76px;height:76px;border-radius:50%;border:4px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:34px;flex:none;position:relative}
+.stop.boss .node{width:92px;height:92px;font-size:42px;border-width:5px;border-style:double;border-color:var(--litchi)}
+.stop.done .node{border-color:var(--leaf)}
+.stop.cur .node{border-color:var(--mango);animation:pulse 1.6s ease-in-out infinite}
+.stop.locked{cursor:not-allowed}
+.stop.locked .node{background:var(--lock);font-size:26px}
+.stop .num{position:absolute;bottom:-6px;right:-8px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:800;border-radius:999px;min-width:28px;height:26px;display:grid;place-items:center;padding:0 6px}
+.slabel{display:flex;flex-direction:column;line-height:1.2}
+.slabel b{font-size:19px}
+.slabel small{color:var(--muted);font-size:15px}
+.slabel span{color:var(--mango);letter-spacing:2px;font-size:17px}
+.stop.locked .slabel{opacity:.55}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,174,50,.6)}50%{box-shadow:0 0 0 14px rgba(240,174,50,0)}}
+.coins{font-size:22px;font-weight:800;color:var(--mango);margin-top:4px}
+.newbadge{margin-top:10px;padding:10px;border-radius:14px;border:3px solid var(--mango);font-weight:700;font-size:20px}
+.newbadge b{font-size:40px;display:block}
+.seltext{font-size:30px;line-height:1.9;user-select:text;cursor:text;background:var(--surface);padding:18px 22px;border-radius:14px;border:2px solid var(--line);margin:0}
+.seltext::selection{background:#9CC8FF;color:#000}
+.word.sm{font-size:clamp(26px,5vw,44px);letter-spacing:.02em}
+.race{font-size:22px;font-weight:800;color:var(--litchi)}
+.appwin{position:absolute;width:58%;height:60%;background:var(--surface);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden}
+.appwin.max{left:0 !important;top:0 !important;width:100%;height:calc(100% - 44px);border-radius:0}
+.appbody{flex:1;display:grid;place-items:center;font-size:64px;background:var(--stage)}
+.tbtn{border:none;background:none;color:#fff;font-size:24px;width:50px;height:40px;border-radius:6px;cursor:pointer;position:relative}
+.tbtn:hover{background:rgba(255,255,255,.15)}
+.tbtn.open::after{content:"";position:absolute;left:16px;right:16px;bottom:3px;height:3px;border-radius:2px;background:#9CC8FF}
+.tbtn.top::after{left:8px;right:8px;background:#F0AE32}
+.npwin{z-index:4}
+.npmenu{display:flex;gap:4px;padding:2px 8px;border-bottom:1px solid var(--line);position:relative}
+.npmenu > button{border:none;background:none;padding:2px 12px;border-radius:6px;cursor:pointer;font-size:17px}
+.npmenu > button:hover{background:var(--line)}
+.npta{flex:1;border:none;resize:none;padding:10px 14px;font:inherit;font-size:20px;background:var(--surface);color:var(--ink)}
+.npta:focus{outline:none}
+.dlg{position:absolute;left:40px;right:40px;top:26px;bottom:66px;background:var(--surface);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:7;display:flex;flex-direction:column;overflow:hidden;color:var(--ink)}
+.dlg .dt{padding:8px 14px;font-weight:700;background:var(--bg);border-bottom:1px solid var(--line)}
+.dlg .db{flex:1;display:flex;min-height:0}
+.places{width:40%;border-right:1px solid var(--line);padding:6px;overflow:auto}
+.places button{display:block;width:100%;border:none;background:none;text-align:left;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:17px}
+.places button:hover{background:var(--bg)}
+.places button.on{background:rgba(46,122,68,.2);font-weight:700}
+.dfiles{flex:1;padding:10px;color:var(--muted);font-size:16px;overflow:auto;white-space:pre-line}
+.dfoot{display:flex;gap:8px;align-items:center;padding:8px 12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.dfoot input{flex:1;min-width:120px;font:inherit;font-size:18px;padding:4px 10px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.dfoot input:focus{outline:none;border-color:var(--leaf)}
+.dfoot .btn{font-size:17px;padding:6px 18px}
+.browser{height:min(64vh,540px);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;background:var(--surface)}
+.tabs{display:flex;align-items:flex-end;gap:4px;padding:6px 6px 0;background:var(--bg)}
+.tab{display:flex;align-items:center;gap:6px;padding:5px 6px 5px 12px;border-radius:10px 10px 0 0;background:var(--lock);font-size:16px;width:190px;min-width:0;cursor:pointer}
+.tab.on{background:var(--surface)}
+.tab .tt{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1}
+.tab .tx{border:none;background:none;cursor:pointer;width:26px;height:26px;border-radius:50%;font-size:13px;flex:none}
+.tab .tx:hover{background:var(--line)}
+.tplus{border:none;background:none;font-size:24px;width:38px;height:34px;cursor:pointer;border-radius:8px;flex:none}
+.tplus:hover{background:var(--line)}
+.tspace{flex:1}
+.tools{display:flex;gap:4px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line)}
+.addr{flex:1;min-width:0;font:inherit;font-size:18px;padding:5px 16px;border-radius:999px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.addr:focus{outline:none;border-color:var(--leaf)}
+.bpage{flex:1;overflow:auto;padding:18px 24px;font-size:19px}
+.bpage.flash{opacity:.3}
+.logo{font-size:52px;font-weight:800;text-align:center;margin:30px 0 14px;color:var(--leaf)}
+.bpage .addr.mid{display:block;margin:0 auto;width:min(480px,100%);flex:none}
+.res{margin:0 0 18px;max-width:40em}
+.res a{font-size:21px;color:var(--link);cursor:pointer;text-decoration:underline}
+.res .u{font-size:15px;color:var(--leaf)}
+.res p{margin:2px 0 0;color:var(--muted);font-size:17px}
+.res.ad{background:rgba(240,174,50,.16);padding:10px 12px;border-radius:10px}
+.adtag{font-weight:800;font-size:14px;border:1.5px solid currentColor;border-radius:4px;padding:0 5px;margin-right:6px;color:var(--ink)}
+.bpage h2{margin:0 0 10px;font-size:28px}
+.bpage article p{max-width:38em}
+.vid{background:#000;color:#fff;border-radius:12px;height:240px;display:grid;place-items:center;font-size:64px;cursor:pointer;max-width:520px}
+.closed{flex:1;display:grid;place-items:center;color:var(--muted);padding:20px;text-align:center}
+.chat{height:min(64vh,540px);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;background:var(--surface)}
+.clist{width:36%;min-width:150px;border-right:1px solid var(--line);overflow:auto}
+.cperson{display:flex;gap:10px;align-items:center;width:100%;border:none;background:none;text-align:left;padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--line);font-size:17px;line-height:1.2}
+.cperson:hover,.cperson.on{background:var(--bg)}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--lock);font-size:22px;flex:none}
+.unread{margin-left:auto;background:var(--leaf);color:var(--leaf-ink);border-radius:999px;font-size:13px;padding:0 8px;font-weight:700}
+.cmain{flex:1;display:flex;flex-direction:column;position:relative;min-width:0}
+.chead{padding:10px 14px;font-weight:700;border-bottom:1px solid var(--line);background:var(--bg)}
+.msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--stage)}
+.msg{max-width:78%;padding:7px 12px;border-radius:12px;font-size:18px;background:var(--surface);border:1px solid var(--line);align-self:flex-start;word-break:break-word}
+.msg.me{align-self:flex-end;background:#DCF3D5;border-color:#B7DDB0;color:#1D2A21}
+.msg.pic{font-size:60px;line-height:1.1}
+.cbar{display:flex;gap:4px;padding:8px;border-top:1px solid var(--line);align-items:center}
+.cin{flex:1;font:inherit;font-size:18px;padding:6px 14px;border-radius:999px;border:2px solid var(--line);background:var(--bg);color:var(--ink);min-width:0}
+.cin:focus{outline:none;border-color:var(--leaf)}
+.pop{position:absolute;bottom:60px;left:8px;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:3;display:flex;flex-wrap:wrap;gap:2px;max-width:250px}
+.pop button{border:none;background:none;font-size:26px;padding:4px 8px;border-radius:8px;cursor:pointer}
+.pop button:hover{background:var(--bg)}
+.pop.att{flex-direction:column;flex-wrap:nowrap}
+.pop.att button{font-size:18px;text-align:left}
+.cempty{flex:1;display:grid;place-items:center;color:var(--muted);padding:20px;text-align:center}
+@media (max-width:600px){.dlg{left:8px;right:8px}.clist{min-width:110px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="home">
+  <div class="langs"><button id="lhi">हिंदी</button><button id="len">English</button></div>
+  <div class="hero">
+    <h1 id="h1"></h1>
+    <p id="heroP"></p>
+  </div>
+  <div class="hud" id="hud"></div>
+  <button class="btn go" id="goBtn"></button>
+  <div class="tip" id="tip"></div>
+  <div id="weeks"></div>
+  <div class="foot">
+    <button class="link" id="soundBtn"></button>
+    <button class="link" id="resetBtn"></button>
+  </div>
+</section>
+
+<section id="play" hidden>
+  <div class="bar">
+    <button class="btn ghost" id="backBtn"></button>
+    <div class="track"><i id="trackFill"></i></div>
+    <div class="count" id="count"></div>
+  </div>
+  <h2 class="lvl-title" id="lvlTitle"></h2>
+  <div class="task" id="task"></div>
+  <div class="fb" id="fb" aria-live="polite"></div>
+  <div class="stage" id="stage"></div>
+</section>
+</div>
+
+<div class="overlay" id="result" hidden>
+  <div class="card">
+    <div class="s" id="resStars"></div>
+    <h3 id="resTitle"></h3>
+    <div class="coins" id="resCoins"></div>
+    <p id="resText" class="note"></p>
+    <div class="newbadge" id="resBadge" hidden></div>
+    <div class="bar">
+      <button class="btn ghost" id="againBtn"></button>
+      <button class="btn" id="nextBtn"></button>
+    </div>
+    <div class="bar"><button class="link" id="homeBtn"></button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+const LS='laptop-seekho-v3';
+let state={done:{},sound:true,lang:'hi'};
+try{const s=JSON.parse(localStorage.getItem(LS)||'null');if(s&&s.done)state=Object.assign(state,s);
+  else{const o=JSON.parse(localStorage.getItem('laptop-seekho-v2')||'null');
+    if(o&&o.done){const MAP={0:0,1:1,2:2,3:3,4:4,5:6,6:7,7:9,8:10,9:11,10:14,11:15,12:16,13:17,14:23,15:24,16:25};
+      state.sound=o.sound!==false;state.lang=o.lang||'hi';Object.keys(o.done).forEach(k=>{if(MAP[k]!==undefined)state.done[MAP[k]]=o.done[k];});}}}catch(e){}
+function save(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+const t=(h,e)=>state.lang==='en'?e:h;
+const tt=a=>a[state.lang==='en'?1:0];
+const $=id=>document.getElementById(id);
+const el=(tag,cls)=>{const x=document.createElement(tag);if(cls)x.className=cls;return x;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const FRUITS=['🍎','🥭','🍌','🍊','🍇','🍍','🍉','🍓','🍐','🥝','🍒','🍋'];
+
+let ac=null;
+function tone(f,d,type){ if(!state.sound)return;
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.value=f;
+  g.gain.setValueAtTime(.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d);}catch(e){} }
+const ding=()=>{tone(880,.15);setTimeout(()=>tone(1320,.18),90);};
+const buzz=()=>tone(180,.22,'square');
+
+/* step-by-step helper */
+function stepper(api,list,host){
+  const ol=el('ol','steps');host.appendChild(ol);
+  const lis=list.map(s=>{const li=el('li');li.innerHTML=s.t;ol.appendChild(li);return li;});
+  let n=0;
+  const paint=()=>{lis.forEach((li,i)=>li.className=i<n?'did':i===n?'now':'');if(n<list.length)api.task(list[n].t,true);};
+  api.progress(0,list.length);paint();
+  return (ty,info)=>{ if(n>=list.length)return;
+    if(list[n].ok(ty,info)){n++;api.good();api.progress(n,list.length);paint();if(n>=list.length)api.later(api.finish,600);} };
+}
+
+/* ---------- pretend desktop ---------- */
+function deskNames(){return{
+  my:t('मेरी चीज़ें','My stuff'),movies:t('फ़िल्में','Movies'),photos:t('फ़ोटो','Photos'),song:t('गाना.mp4','Song.mp4'),
+  film:t('परिवार की फ़िल्म.mp4','Family movie.mp4'),shopPhoto:t('दुकान की फ़ोटो.jpg','Shop photo.jpg'),singtam:t('सिंगताम.jpg','Singtam.jpg'),
+  hisab:t('हिसाब.txt','Accounts.txt'),shop:t('दुकान','Shop'),bin:'Recycle Bin',newf:t('नया फ़ोल्डर','New folder'),
+  open:t('खोलो','Open'),copy:t('कॉपी','Copy'),paste:t('पेस्ट','Paste'),del:t('डिलीट','Delete'),ren:t('नाम बदलो','Rename'),
+  restore:t('वापस लाओ','Restore'),empty:t('यह फ़ोल्डर ख़ाली है','This folder is empty'),suffix:t(' - कॉपी',' - Copy'),
+  text:t('आज का हिसाब: आम 20 किलो, सेब 15 किलो, केला 12 दर्जन','Today: mango 20 kg, apple 15 kg, banana 12 dozen')
+};}
+function makeDesk(api,N,onEvent){
+  const st=api.stage;st.classList.add('pad');
+  let uid=0;
+  const mk=(name,type,ch)=>{const n={id:++uid,name,type,ch:ch||null,parent:null};if(ch)ch.forEach(c=>c.parent=n);return n;};
+  const root=mk('Desktop','folder',[
+    mk(N.my,'folder',[mk(N.movies,'folder',[mk(N.song,'video'),mk(N.film,'video')]),mk(N.photos,'folder',[mk(N.shopPhoto,'image'),mk(N.singtam,'image')]),mk(N.hisab,'text')]),
+    mk(N.shop,'folder',[]),mk(N.bin,'bin',[])]);
+  const bin=root.ch[2];
+  const IC={folder:'📁',video:'🎬',image:'🖼️',text:'📄',bin:'🗑️'};
+  const desk=el('div','desk'),di=el('div','dicons'),tb=el('div','taskbar');
+  tb.innerHTML='<span>⊞</span><span>📁</span><span>🌐</span>';
+  desk.append(di,tb);st.appendChild(desk);
+  let win=null,sel=null,clip=null,menu=null,ov=null,timer=null;
+  api.cleanup(()=>clearInterval(timer));
+  const ev=(ty,info)=>onEvent(ty,info);
+  const closeMenu=()=>{if(menu){menu.remove();menu=null;}};
+  function showMenu(e,items){ closeMenu(); if(!items)return;
+    menu=el('div','menu');
+    items.forEach(([label,fn,dis])=>{const b=el('button');b.textContent=label;if(dis)b.disabled=true;
+      b.addEventListener('click',x=>{x.stopPropagation();closeMenu();fn();});
+      b.addEventListener('contextmenu',x=>{x.preventDefault();x.stopPropagation();});menu.appendChild(b);});
+    desk.appendChild(menu);
+    const dr=desk.getBoundingClientRect();
+    menu.style.left=Math.max(4,Math.min(e.clientX-dr.left,dr.width-menu.offsetWidth-6))+'px';
+    menu.style.top=Math.max(4,Math.min(e.clientY-dr.top,dr.height-menu.offsetHeight-6))+'px';
+  }
+  const setSel=n=>{sel=n;desk.querySelectorAll('.ico').forEach(x=>x.classList.toggle('sel',x._n===n));};
+  const inBin=n=>n.parent===bin;
+  function itemMenu(n){
+    if(inBin(n))return[[N.restore,()=>restore(n)]];
+    if(n.type==='bin')return[[N.open,()=>open(n)]];
+    return[[N.open,()=>open(n)],[N.copy,()=>copy(n,'menu')],[N.ren,()=>{n.editing=true;render();}],[N.del,()=>del(n,'menu')]];
+  }
+  const areaMenu=f=>f.type==='bin'?null:[[N.paste,()=>paste(f,'menu'),!clip],[N.newf,()=>newFolder(f)]];
+  function iconEl(n){
+    const b=el('div','ico'+(sel===n?' sel':''));b._n=n;
+    b.innerHTML='<span class="e">'+IC[n.type]+'</span>';
+    if(n.editing){
+      const inp=el('input','ren');inp.value=n.name;b.appendChild(inp);
+      setTimeout(()=>{inp.focus();inp.select();},0);
+      inp.addEventListener('keydown',x=>{x.stopPropagation();if(x.key==='Enter'){x.preventDefault();commit(n,inp.value);}else if(x.key==='Escape'){commit(n,n.name);}});
+      inp.addEventListener('blur',()=>{if(n.editing)commit(n,inp.value);});
+      ['click','dblclick','mousedown','contextmenu'].forEach(k=>inp.addEventListener(k,x=>x.stopPropagation()));
+    }else{const s=el('span');s.textContent=n.name;b.appendChild(s);}
+    b.addEventListener('click',x=>{x.stopPropagation();closeMenu();setSel(n);ev('select',n);});
+    b.addEventListener('dblclick',x=>{x.stopPropagation();open(n);});
+    b.addEventListener('contextmenu',x=>{x.preventDefault();x.stopPropagation();setSel(n);showMenu(x,itemMenu(n));});
+    return b;
+  }
+  function open(n){ closeMenu(); if(inBin(n))return;
+    if(n.type==='folder'||n.type==='bin'){win=n;sel=null;render();ev('open',n);}
+    else if(n.type==='video')player(n); else viewer(n); }
+  function copy(n,m){clip=n;ev('copy',{n,m});}
+  function clone(n){const c={id:++uid,name:n.name,type:n.type,ch:n.ch?n.ch.map(clone):null,parent:null};if(c.ch)c.ch.forEach(x=>x.parent=c);return c;}
+  function addSuffix(name){const i=name.lastIndexOf('.');return i>0?name.slice(0,i)+N.suffix+name.slice(i):name+N.suffix;}
+  function paste(f,m){ if(!clip||f.type==='bin')return;
+    const c=clone(clip);while(f.ch.some(x=>x.name===c.name))c.name=addSuffix(c.name);
+    c.parent=f;f.ch.push(c);sel=null;render();ev('paste',{f,n:c,m}); }
+  const isInside=(w,n)=>{for(let x=w;x;x=x.parent)if(x===n)return true;return false;};
+  function del(n,m){ if(n.type==='bin'||inBin(n))return;
+    const p=n.parent;p.ch.splice(p.ch.indexOf(n),1);n.orig=p;n.parent=bin;bin.ch.push(n);
+    if(win&&isInside(win,n))win=null;sel=null;render();ev('delete',{n,m}); }
+  function restore(n){bin.ch.splice(bin.ch.indexOf(n),1);n.parent=n.orig||root;n.parent.ch.push(n);render();ev('restore',n);}
+  function newFolder(f){const n=mk(N.newf,'folder',[]);n.isNew=true;n.parent=f;f.ch.push(n);n.editing=true;sel=n;render();ev('newfolder',n);}
+  function commit(n,v){ n.editing=false;v=(v||'').trim();
+    if(v&&v!==n.name){while(n.parent.ch.some(x=>x!==n&&x.name===v))v=v+' 2';n.name=v;}
+    render();ev('rename',n); }
+  function pathOf(f){const a=[];for(let x=f;x&&x!==root;x=x.parent)a.unshift(x.name);return a.join(' › ');}
+  function render(){
+    di.innerHTML='';root.ch.forEach(n=>di.appendChild(iconEl(n)));
+    const old=desk.querySelector('.win');if(old)old.remove();
+    if(!win)return;
+    const w=el('div','win'),bar=el('div','wbar'),back=el('button','wbtn'),p=el('span','p'),x=el('button','wbtn x'),body=el('div','wbody');
+    back.textContent='←';back.setAttribute('aria-label',t('पीछे','Back'));back.disabled=win.parent===root;
+    back.addEventListener('click',e=>{e.stopPropagation();if(win.parent!==root){win=win.parent;sel=null;render();ev('back',win);}});
+    p.textContent=pathOf(win);
+    x.textContent='✕';x.setAttribute('aria-label',t('बंद करो','Close'));
+    x.addEventListener('click',e=>{e.stopPropagation();closeMenu();win=null;sel=null;render();ev('close');});
+    bar.append(back,p,x);
+    if(!win.ch.length){const em=el('div','empty');em.textContent=N.empty;body.appendChild(em);}
+    else win.ch.forEach(n=>body.appendChild(iconEl(n)));
+    body.addEventListener('click',()=>{closeMenu();setSel(null);});
+    body.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();setSel(null);showMenu(e,areaMenu(win));});
+    w.addEventListener('click',e=>e.stopPropagation());
+    w.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();});
+    w.append(bar,body);desk.insertBefore(w,tb);
+  }
+  function overlay(cls){ov=el('div',cls);ov.addEventListener('click',e=>e.stopPropagation());ov.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();});return ov;}
+  function closeOv(type){clearInterval(timer);if(ov){ov.remove();ov=null;}ev(type);}
+  function player(n){
+    const o=overlay('player');
+    const sc=el('div','screen');const mv=el('div','mv');mv.textContent=n.name===N.song?'🎵 🎶':'👨‍👩‍👧 🏔️';sc.appendChild(mv);
+    const c=el('div','ctl'),pp=el('button'),pg=el('div','pg'),bar=el('i'),vol=el('button'),cl=el('button');
+    pp.textContent='⏸';vol.textContent='🔊';cl.textContent='✕';pg.appendChild(bar);
+    pp.setAttribute('aria-label',t('रोको / चलाओ','Pause / play'));cl.setAttribute('aria-label',t('बंद करो','Close'));
+    let paused=false,pct=0;
+    clearInterval(timer);timer=setInterval(()=>{if(!paused){pct=(pct+0.6)%100;bar.style.width=pct+'%';}},200);
+    pp.addEventListener('click',()=>{paused=!paused;o.classList.toggle('paused',paused);pp.textContent=paused?'▶':'⏸';ev(paused?'pause':'resume');});
+    vol.addEventListener('click',()=>{vol.textContent=vol.textContent==='🔊'?'🔇':'🔊';});
+    cl.addEventListener('click',()=>closeOv('closeplayer'));
+    c.append(pp,pg,vol,cl);o.append(sc,c);desk.appendChild(o);ev('play',n);
+  }
+  function viewer(n){
+    const o=overlay('player viewer');const sc=el('div','screen');
+    if(n.type==='text')sc.textContent=N.text;
+    else sc.innerHTML='<div><span class="e">'+(n.name===N.shopPhoto?'🏪':'🏔️')+'</span>'+n.name+'</div>';
+    const c=el('div','ctl'),sp=el('div','pg'),cl=el('button');cl.textContent='✕';sp.style.background='transparent';
+    cl.addEventListener('click',()=>closeOv('closeview'));c.append(sp,cl);o.append(sc,c);desk.appendChild(o);ev('view',n);
+  }
+  desk.addEventListener('click',()=>{closeMenu();setSel(null);});
+  desk.addEventListener('contextmenu',e=>{e.preventDefault();if(e.target===desk||e.target===di){setSel(null);showMenu(e,areaMenu(root));}});
+  api.on(document,'keydown',e=>{
+    if(e.target&&e.target.tagName==='INPUT')return;
+    const k=(e.key||'').toLowerCase(),c=e.ctrlKey||e.metaKey;
+    if(e.key==='Escape'){closeMenu();return;}
+    if(ov)return;
+    if(c&&k==='c'&&sel&&sel.type!=='bin'&&!inBin(sel)){e.preventDefault();copy(sel,'key');}
+    else if(c&&k==='v'){e.preventDefault();const f=win||root;if(clip&&f.type!=='bin')paste(f,'key');}
+    else if(e.key==='Delete'&&sel){e.preventDefault();del(sel,'key');}
+    else if(e.key==='Enter'&&sel){e.preventDefault();open(sel);}
+    else if(e.key==='F2'&&sel&&sel.type!=='bin'&&!inBin(sel)){e.preventDefault();sel.editing=true;render();}
+  });
+  render();
+}
+
+/* ---------- pretend browser ---------- */
+function makeBrowser(api,onEvent){
+  const st=api.stage;st.classList.add('pad');
+  const B=el('div','browser');st.appendChild(B);
+  let tabs=[{h:[{p:'new'}],i:0}],act=0,closed=false,ended=false;
+  const cur=()=>tabs[act].h[tabs[act].i];
+  const ART=t('आम के 10 फ़ायदे','10 benefits of mangoes');
+  const title=pg=>pg.p==='new'?t('नया टैब','New tab'):pg.p==='results'?pg.q:pg.p==='article'?ART:'YouTube';
+  const url=pg=>pg.p==='new'?'':pg.p==='results'?'google.com/search?q='+pg.q:pg.p==='article'?'phalgyan.example/aam':'youtube.com';
+  function go(pg){const tb=tabs[act];tb.h=tb.h.slice(0,tb.i+1);tb.h.push(pg);tb.i++;ended=false;render();onEvent('nav',pg);}
+  function submit(v){v=(v||'').trim();if(!v)return;if(/youtube/i.test(v))go({p:'video'});else go({p:'results',q:v});onEvent('search',v);}
+  function render(){
+    B.innerHTML='';
+    if(closed){const c=el('div','closed');c.textContent=t('ब्राउज़र बंद हो गया। शाबाश!','The browser is closed. Well done!');B.appendChild(c);return;}
+    const row=el('div','tabs');
+    tabs.forEach((tb,i)=>{const b=el('div','tab'+(i===act?' on':''));const tt=el('span','tt');tt.textContent=title(tb.h[tb.i]);
+      const x=el('button','tx');x.textContent='✕';x.setAttribute('aria-label',t('टैब बंद करो','Close tab'));
+      b.addEventListener('click',()=>{if(act!==i){act=i;render();onEvent('switch',i);}});
+      x.addEventListener('click',e=>{e.stopPropagation();tabs.splice(i,1);
+        if(!tabs.length){closed=true;render();onEvent('closetab',i);onEvent('closebrowser');return;}
+        if(i<act||act>=tabs.length)act=Math.max(0,act-1);render();onEvent('closetab',i);});
+      b.append(tt,x);row.appendChild(b);});
+    const plus=el('button','tplus');plus.textContent='+';plus.setAttribute('aria-label',t('नया टैब','New tab'));
+    plus.addEventListener('click',()=>{tabs.push({h:[{p:'new'}],i:0});act=tabs.length-1;render();onEvent('newtab');const a=B.querySelector('.tools .addr');if(a)a.focus();});
+    const sp=el('span','tspace'),cx=el('button','wbtn x');cx.textContent='✕';cx.setAttribute('aria-label',t('ब्राउज़र बंद करो','Close browser'));
+    cx.addEventListener('click',()=>{closed=true;render();onEvent('closebrowser');});
+    row.append(plus,sp,cx);
+    const tools=el('div','tools'),tb=tabs[act];
+    const bk=el('button','wbtn'),fw=el('button','wbtn'),rf=el('button','wbtn');
+    bk.textContent='←';fw.textContent='→';rf.textContent='⟳';
+    bk.setAttribute('aria-label',t('पीछे','Back'));fw.setAttribute('aria-label',t('आगे','Forward'));rf.setAttribute('aria-label',t('ताज़ा करो','Refresh'));
+    bk.disabled=tb.i===0;fw.disabled=tb.i>=tb.h.length-1;
+    bk.addEventListener('click',()=>{tb.i--;ended=false;render();onEvent('back');});
+    fw.addEventListener('click',()=>{tb.i++;ended=false;render();onEvent('forward');});
+    const ad=el('input','addr');ad.value=url(cur());ad.placeholder=t('खोजो या पता लिखो','Search or type an address');ad.setAttribute('aria-label',t('पते वाली पट्टी','Address bar'));
+    ad.addEventListener('focus',()=>{ad.select();onEvent('focusaddr');});
+    ad.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submit(ad.value);}});
+    tools.append(bk,fw,rf,ad);
+    const page=el('div','bpage');
+    rf.addEventListener('click',()=>{page.classList.add('flash');setTimeout(()=>page.classList.remove('flash'),300);onEvent('refresh');});
+    const pg=cur();
+    if(pg.p==='new'){
+      const lg=el('div','logo');lg.textContent=t('खोज','Search');const inp=el('input','addr mid');inp.placeholder=t('यहाँ भी लिख सकते हो','You can type here too');
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submit(inp.value);}});page.append(lg,inp);
+    }else if(pg.p==='results'){
+      const h=el('p','note');h.textContent=t('“'+pg.q+'” के नतीजे','Results for “'+pg.q+'”');page.appendChild(h);
+      const adv=el('div','res ad');adv.innerHTML='<span class="adtag">Ad</span><a></a><p></p>';
+      adv.querySelector('a').textContent=t('मुफ़्त मोबाइल जीतो! अभी क्लिक करो 🎁','Win a free phone! Click now 🎁');
+      adv.querySelector('p').textContent=t('सिर्फ़ आज! अपना नंबर और OTP डालो','Today only! Enter your number and OTP');
+      adv.querySelector('a').addEventListener('click',()=>onEvent('ad'));page.appendChild(adv);
+      [[ART,t('आम में विटामिन होते हैं। जानिए और क्या फ़ायदे हैं।','Mangoes have vitamins. Find out what else they are good for.')],
+       [t('पका और मीठा आम कैसे चुनें','How to pick a ripe, sweet mango'),t('रंग, ख़ुशबू और छूकर पहचानो।','Check the colour, smell and feel.')],
+       [t('आम की 5 मशहूर किस्में','5 famous kinds of mango'),t('लंगड़ा, दशहरी, अल्फ़ांसो और भी।','Langra, Dasheri, Alphonso and more.')]].forEach(r=>{
+        const d=el('div','res');d.innerHTML='<div class="u">phalgyan.example</div><a></a><p></p>';d.querySelector('a').textContent=r[0];d.querySelector('p').textContent=r[1];
+        d.querySelector('a').addEventListener('click',()=>go({p:'article'}));page.appendChild(d);});
+    }else if(pg.p==='article'){
+      const a=el('article');const h=el('h2');h.textContent=ART;a.appendChild(h);
+      (state.lang==='en'?['Mangoes are one of the most loved fruits in summer.','They have vitamin C, which is good for the body.','They also have vitamin A, which helps the eyes.','The fibre in mangoes helps digestion.','A ripe mango gives quick energy.','Mango shake and aam panna are popular drinks.','Eat mangoes in moderation, they are sweet.','Wash mangoes well before eating.','Keep raw mangoes in paper to ripen them.','Mango leaves are used in festivals too.']
+       :['आम गर्मी का सबसे पसंदीदा फल है।','इसमें विटामिन C होता है, जो शरीर के लिए अच्छा है।','इसमें विटामिन A भी है, जो आँखों के लिए अच्छा है।','आम का रेशा (फ़ाइबर) पाचन में मदद करता है।','पका आम जल्दी ताक़त देता है।','आम का शेक और आम पन्ना लोग बहुत पीते हैं।','आम मीठा होता है, इसलिए सही मात्रा में खाओ।','खाने से पहले आम अच्छे से धो लो।','कच्चे आम को कागज़ में रखो, जल्दी पक जाएगा।','त्योहारों में आम के पत्ते भी काम आते हैं।'])
+       .forEach((x,i)=>{const p=el('p');p.textContent=(i+1)+'. '+x;a.appendChild(p);});
+      const end=el('p','note');end.textContent=t('लेख यहाँ ख़त्म हुआ।','End of article.');a.appendChild(end);page.appendChild(a);
+      page.addEventListener('scroll',()=>{if(!ended&&page.scrollTop+page.clientHeight>=page.scrollHeight-12){ended=true;onEvent('end');}});
+    }else{
+      const h=el('h2');h.textContent=t('मज़ेदार पहाड़ी गाना','A fun mountain song');const v=el('div','vid');v.textContent='▶';
+      v.addEventListener('click',()=>{v.textContent=v.textContent==='▶'?'🎵 ⏸':'▶';onEvent('playvideo');});page.append(h,v);
+    }
+    B.append(row,tools,page);
+  }
+  render();
+}
+
+/* ---------- LEVELS ---------- */
+const LEVELS=[
+/* 1 */{world:1,ic:'🖱️',title:['माउस घुमाओ, फल पकड़ो','Move the mouse, catch the fruit'],
+start(api){
+  const st=api.stage,total=12;let n=0;
+  api.arena();api.task(t('माउस का तीर फल के ऊपर ले जाओ और एक बार क्लिक करो','Move the arrow onto the fruit and click once'));
+  function spawn(){
+    const b=el('button','fruit');b.textContent=pick(FRUITS);b.setAttribute('aria-label',t('फल','Fruit'));
+    const size=Math.round(116-n*(58/(total-1)));
+    b.style.width=b.style.height=size+'px';b.style.fontSize=Math.round(size*.66)+'px';
+    const r=st.getBoundingClientRect();
+    b.style.left=Math.round(Math.random()*(r.width-size-8)+4)+'px';b.style.top=Math.round(Math.random()*(r.height-size-8)+4)+'px';
+    b.addEventListener('click',e=>{e.stopPropagation();if(b.classList.contains('pop'))return;
+      b.classList.add('pop');n++;api.good();api.progress(n,total);setTimeout(()=>b.remove(),200);
+      if(n>=total)api.later(api.finish,400);else spawn();});
+    st.appendChild(b);
+  }
+  api.on(st,'click',()=>api.bad(t('फल के ठीक ऊपर क्लिक करो','Click right on the fruit')));
+  api.progress(0,total);spawn();
+}},
+/* 2 */{world:1,ic:'📦',title:['डबल क्लिक: पेटी खोलो','Double-click: open the box'],
+start(api){
+  const st=api.stage,total=8;let n=0,tm=null;
+  api.arena();api.task(t('पेटी पर जल्दी-जल्दी दो बार क्लिक करो (टक-टक)','Click the box twice quickly (tap-tap)'));
+  api.cleanup(()=>clearTimeout(tm));
+  function spawn(){
+    const b=el('button','box');b.textContent=t('पेटी','BOX');
+    const r=st.getBoundingClientRect();
+    b.style.left=Math.round(Math.random()*(r.width-130)+5)+'px';b.style.top=Math.round(Math.random()*(r.height-120)+5)+'px';
+    b.addEventListener('click',()=>{if(b.classList.contains('open'))return;clearTimeout(tm);
+      tm=setTimeout(()=>api.bad(t('एक क्लिक से नहीं खुलेगी। माउस हिलाए बिना दो बार जल्दी दबाओ','One click won’t open it. Press twice quickly without moving the mouse')),480);});
+    b.addEventListener('dblclick',()=>{if(b.classList.contains('open'))return;clearTimeout(tm);
+      b.classList.add('open');b.textContent=pick(FRUITS);n++;api.good(t('खुल गई!','Opened!'));api.progress(n,total);
+      setTimeout(()=>{b.remove();if(n>=total)api.finish();else spawn();},650);});
+    st.appendChild(b);
+  }
+  api.progress(0,total);spawn();
+}},
+/* 3 */{world:1,ic:'👉',title:['राइट क्लिक: छुपा मेनू','Right-click: the hidden menu'],
+start(api){
+  const st=api.stage,total=6,OPTS=state.lang==='en'?['See price','Put in basket','Remove']:['दाम देखो','टोकरी में डालो','हटा दो'];
+  let n=0,target='',menu=null,fruit=null;
+  api.arena();
+  api.on(st,'contextmenu',e=>e.preventDefault());
+  api.on(st,'click',e=>{if(menu&&!menu.contains(e.target)){menu.remove();menu=null;}});
+  function round(){
+    target=pick(OPTS);
+    api.task(t('फल पर RIGHT क्लिक करो, फिर “'+target+'” चुनो','Right-click the fruit, then choose “'+target+'”'));
+    fruit=el('button','fruit');fruit.textContent=pick(FRUITS);fruit.style.width=fruit.style.height='96px';fruit.style.fontSize='64px';
+    const r=st.getBoundingClientRect();
+    fruit.style.left=Math.round(Math.random()*(r.width-300)+10)+'px';fruit.style.top=Math.round(Math.random()*(r.height-260)+10)+'px';
+    fruit.addEventListener('click',e=>{e.stopPropagation();api.bad(t('यह बायाँ (left) क्लिक था। माउस का दायाँ बटन दबाओ। टचपैड पर: नीचे दाएँ कोने को दबाओ','That was a left click. Press the right mouse button. On a touchpad: press the bottom-right corner'));});
+    fruit.addEventListener('contextmenu',e=>{
+      e.preventDefault();e.stopPropagation();if(menu)menu.remove();
+      const sr=st.getBoundingClientRect();menu=el('div','menu');
+      OPTS.forEach(o=>{const b=el('button');b.textContent=o;
+        b.addEventListener('click',ev=>{ev.stopPropagation();
+          if(o===target){menu.remove();menu=null;fruit.remove();n++;api.good();api.progress(n,total);if(n>=total)api.later(api.finish,300);else round();}
+          else api.bad(t('यह “'+o+'” है। हमें “'+target+'” चाहिए','That is “'+o+'”. We need “'+target+'”'));});
+        menu.appendChild(b);});
+      st.appendChild(menu);
+      menu.style.left=Math.max(4,Math.min(e.clientX-sr.left,sr.width-menu.offsetWidth-6))+'px';
+      menu.style.top=Math.max(4,Math.min(e.clientY-sr.top,sr.height-menu.offsetHeight-6))+'px';
+    });
+    st.appendChild(fruit);
+  }
+  api.progress(0,total);round();
+}},
+/* 4 */{world:1,ic:'🧺',title:['खींचो और छोड़ो','Drag and drop'],
+start(api){
+  const st=api.stage;api.arena();
+  api.task(t('फल को दबाकर पकड़ो, सही टोकरी तक खींचो, फिर छोड़ो','Press and hold the fruit, drag it to the right basket, then let go'));
+  api.say(t('टचपैड पर: एक उँगली से दबाए रखो, दूसरी उँगली से खींचो','On a touchpad: hold with one finger, drag with another'));
+  const kinds=[['🍎',t('सेब','Apple')],['🥭',t('आम','Mango')],['🍌',t('केला','Banana')]];
+  const wrap=el('div','baskets');
+  const baskets=kinds.map(k=>{const d=el('div','basket');d.dataset.k=k[0];d.innerHTML='<b>'+k[0]+'</b>'+t(k[1]+' की टोकरी',k[1]+' basket');wrap.appendChild(d);return d;});
+  st.appendChild(wrap);
+  const items=shuffle([...kinds,...kinds,...kinds]),total=items.length;let n=0;
+  const r=st.getBoundingClientRect(),cols=Math.max(3,Math.floor((r.width-20)/90));
+  const slots=shuffle(Array.from({length:Math.max(total,cols*3)},(_,i)=>i)).slice(0,total);
+  const inB=(b,e)=>{const br=b.getBoundingClientRect();return e.clientX>br.left&&e.clientX<br.right&&e.clientY>br.top&&e.clientY<br.bottom;};
+  items.forEach((k,i)=>{
+    const it=el('div','item');it.textContent=k[0];it.dataset.k=k[0];
+    const s=slots[i],hx=10+(s%cols)*((r.width-90)/(cols-1||1)),hy=10+Math.floor(s/cols)*82;
+    it.style.left=hx+'px';it.style.top=hy+'px';
+    let drag=false,ox=0,oy=0;
+    it.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();it.setPointerCapture(e.pointerId);
+      const ir=it.getBoundingClientRect();ox=e.clientX-ir.left;oy=e.clientY-ir.top;drag=true;it.classList.remove('back');it.classList.add('drag');});
+    it.addEventListener('pointermove',e=>{if(!drag)return;const sr=st.getBoundingClientRect();
+      it.style.left=(e.clientX-sr.left-ox)+'px';it.style.top=(e.clientY-sr.top-oy)+'px';baskets.forEach(b=>b.classList.toggle('hit',inB(b,e)));});
+    const drop=e=>{if(!drag)return;drag=false;it.classList.remove('drag');baskets.forEach(b=>b.classList.remove('hit'));
+      const hit=baskets.find(b=>inB(b,e));
+      if(hit&&hit.dataset.k===it.dataset.k){it.remove();n++;api.good();api.progress(n,total);if(n>=total)api.later(api.finish,300);return;}
+      if(hit)api.bad(t('यह ग़लत टोकरी है। '+it.dataset.k+' वाली टोकरी ढूँढो','Wrong basket. Find the '+it.dataset.k+' basket'));
+      else api.say(t('टोकरी के ऊपर लाकर छोड़ो','Let go over a basket'));
+      it.classList.add('back');it.style.left=hx+'px';it.style.top=hy+'px';};
+    it.addEventListener('pointerup',drop);it.addEventListener('pointercancel',drop);
+    st.appendChild(it);
+  });
+  api.progress(0,total);
+}},
+/* 5 */{world:1,ic:'📜',title:['स्क्रॉल: लिस्ट में ढूँढो','Scroll: find it in the list'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  api.say(t('माउस का पहिया घुमाओ। टचपैड पर दो उँगलियों से ऊपर-नीचे करो','Turn the mouse wheel. On a touchpad, move two fingers up and down'));
+  const E=['🍎','🥭','🍌','🍊','🍇','🍍','🍉','🍐','🥝','🍋','🥥','🍒','🍓','🍚','🥛','🥚','🥔','🧅','🍅','🧄','🌶️','🥕','🥦','🫛','🍪','🍞','🧈','🧀','🍯','🧂','☕','🍜','🧼','🍫','🥜','🌽'];
+  const HI='सेब,आम,केला,संतरा,अंगूर,अनानास,तरबूज़,नाशपाती,कीवी,नींबू,नारियल,चेरी,स्ट्रॉबेरी,चावल,दूध,अंडा,आलू,प्याज़,टमाटर,लहसुन,मिर्च,गाजर,ब्रोकली,मटर,बिस्कुट,ब्रेड,मक्खन,पनीर,शहद,नमक,चायपत्ती,मैगी,साबुन,चॉकलेट,मूंगफली,भुट्टा'.split(',');
+  const EN='Apple,Mango,Banana,Orange,Grapes,Pineapple,Watermelon,Pear,Kiwi,Lemon,Coconut,Cherry,Strawberry,Rice,Milk,Egg,Potato,Onion,Tomato,Garlic,Chilli,Carrot,Broccoli,Peas,Biscuit,Bread,Butter,Paneer,Honey,Salt,Tea leaves,Maggi,Soap,Chocolate,Peanuts,Corn'.split(',');
+  const NM=state.lang==='en'?EN:HI;
+  const list=el('div','list');st.appendChild(list);
+  const total=5;let n=0,target=-1;const used=new Set();
+  E.forEach((e,i)=>{const b=el('button','row');b.innerHTML='<span>'+e+'</span>'+NM[i];
+    b.addEventListener('click',()=>{if(i===target){n++;api.good();api.progress(n,total);if(n>=total)api.later(api.finish,300);else round();}
+      else api.bad(t('यह '+NM[i]+' है। नीचे स्क्रॉल करके '+NM[target]+' ढूँढो','This is '+NM[i]+'. Scroll down to find '+NM[target]));});
+    list.appendChild(b);});
+  function round(){let i;do{i=14+Math.floor(Math.random()*(E.length-14));}while(used.has(i));used.add(i);target=i;list.scrollTop=0;
+    api.task(t('नीचे स्क्रॉल करो और “'+NM[i]+' '+E[i]+'” पर क्लिक करो','Scroll down and click “'+NM[i]+' '+E[i]+'”'));}
+  api.progress(0,total);round();
+}},
+/* 6 */{world:1,boss:true,ic:'👑',title:['बॉस: माउस मेला','Boss: mouse fair'],
+start(api){
+  const st=api.stage;api.arena();const total=10;let n=0,tm=null;
+  const types=shuffle(['click','click','click','dbl','dbl','right','right','drag','drag','drag']);
+  const OPTS=state.lang==='en'?['See price','Put in basket','Remove']:['दाम देखो','टोकरी में डालो','हटा दो'];
+  api.on(st,'contextmenu',e=>e.preventDefault());api.cleanup(()=>clearTimeout(tm));
+  const spots=()=>{const r=st.getBoundingClientRect();return shuffle([[.06,.08],[.58,.08],[.06,.56],[.58,.56]]).map(([x,y])=>[Math.round(x*r.width+Math.random()*r.width*.16),Math.round(y*r.height+Math.random()*r.height*.1)]);};
+  const place=(e,p)=>{e.style.left=p[0]+'px';e.style.top=p[1]+'px';};
+  function next(){clearTimeout(tm);n++;api.good();api.progress(n,total);st.innerHTML='';if(n>=total)api.later(api.finish,300);else api.later(round,350);}
+  function round(){
+    st.innerHTML='';clearTimeout(tm);const ty=types[n],sp=spots();
+    if(ty==='click'){
+      const f=shuffle(FRUITS).slice(0,4),target=f[0];
+      api.task(t('सिर्फ़ '+target+' पर एक बार क्लिक करो','Click only the '+target+' once'));
+      shuffle(f).forEach((e,i)=>{const b=el('button','fruit');b.textContent=e;b.style.width=b.style.height='90px';b.style.fontSize='58px';place(b,sp[i]);
+        b.addEventListener('click',()=>{if(e===target)next();else api.bad(t('यह '+e+' है, '+target+' ढूँढो','That is '+e+', find '+target));});st.appendChild(b);});
+    }else if(ty==='dbl'){
+      api.task(t('पेटी पर डबल क्लिक करो','Double-click the box'));
+      const b=el('button','box');b.textContent=t('पेटी','BOX');place(b,sp[0]);
+      b.addEventListener('click',()=>{clearTimeout(tm);tm=setTimeout(()=>api.bad(t('दो बार जल्दी दबाओ','Press twice, quickly')),480);});
+      b.addEventListener('dblclick',()=>{clearTimeout(tm);b.classList.add('open');b.textContent=pick(FRUITS);setTimeout(next,300);});st.appendChild(b);
+    }else if(ty==='right'){
+      const target=pick(OPTS);api.task(t('RIGHT क्लिक करो, फिर “'+target+'” चुनो','Right-click, then choose “'+target+'”'));
+      const f=el('button','fruit');f.textContent=pick(FRUITS);f.style.width=f.style.height='96px';f.style.fontSize='62px';place(f,sp[0]);
+      f.addEventListener('click',()=>api.bad(t('यह left क्लिक था, RIGHT क्लिक करो','That was a left click, use right-click')));
+      f.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();const old=st.querySelector('.menu');if(old)old.remove();
+        const sr=st.getBoundingClientRect(),m=el('div','menu');
+        OPTS.forEach(o=>{const b=el('button');b.textContent=o;b.addEventListener('click',x=>{x.stopPropagation();
+          if(o===target)next();else api.bad(t('यह “'+o+'” है','That is “'+o+'”'));});m.appendChild(b);});
+        st.appendChild(m);m.style.left=Math.max(4,Math.min(e.clientX-sr.left,sr.width-m.offsetWidth-6))+'px';m.style.top=Math.max(4,Math.min(e.clientY-sr.top,sr.height-m.offsetHeight-6))+'px';});
+      st.appendChild(f);
+    }else{
+      api.task(t('फल को खींचकर टोकरी में छोड़ो','Drag the fruit into the basket'));
+      const bk=el('div','basket');bk.style.position='absolute';bk.style.width='170px';bk.style.flex='none';bk.innerHTML='<b>🧺</b>';place(bk,sp[3]);st.appendChild(bk);
+      const it=el('div','item');it.textContent=pick(FRUITS);place(it,sp[0]);st.appendChild(it);
+      let drag=false,ox=0,oy=0;
+      const inB=e=>{const r=bk.getBoundingClientRect();return e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom;};
+      it.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();it.setPointerCapture(e.pointerId);const r=it.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;drag=true;it.classList.remove('back');it.classList.add('drag');});
+      it.addEventListener('pointermove',e=>{if(!drag)return;const sr=st.getBoundingClientRect();it.style.left=(e.clientX-sr.left-ox)+'px';it.style.top=(e.clientY-sr.top-oy)+'px';bk.classList.toggle('hit',inB(e));});
+      const drop=e=>{if(!drag)return;drag=false;it.classList.remove('drag');if(inB(e)){it.remove();next();return;}
+        api.say(t('टोकरी के ऊपर लाकर छोड़ो','Let go over the basket'));it.classList.add('back');place(it,sp[0]);};
+      it.addEventListener('pointerup',drop);it.addEventListener('pointercancel',drop);
+    }
+  }
+  api.progress(0,total);round();
+}},
+/* 7 */{world:2,ic:'✏️',title:['बिंदु जोड़ो','Join the dots'],
+start(api){
+  const st=api.stage;api.arena();st.style.cursor='crosshair';
+  api.task(t('माउस का बटन दबाए रखो और 1 से 2, फिर 2 से 3… लाइन खींचो','Hold the mouse button down and draw a line from 1 to 2, then 2 to 3…'));
+  api.say(t('टचपैड पर: एक उँगली से दबाए रखो, दूसरी से खींचो। Paint में भी ऐसे ही बनाते हैं','On a touchpad: hold with one finger, drag with another. Paint works the same way'));
+  const cv=el('canvas');cv.style.cssText='width:100%;height:100%;display:block;touch-action:none';st.appendChild(cv);
+  const ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1,r0=st.getBoundingClientRect(),W=r0.width,H=r0.height;
+  cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+  const SR=0.36*Math.min(W,H),star=[];
+  for(let i=0;i<5;i++){const a=(-90+72*i)*Math.PI/180;star.push([.5+SR*Math.cos(a)/W,.54+SR*Math.sin(a)/H]);}
+  const SH=[
+    {n:t('घर','House'),e:'🏠',d:[[.3,.85],[.3,.5],[.5,.18],[.7,.5],[.7,.85]],o:[0,1,2,3,4,0]},
+    {n:t('पहाड़','Mountains'),e:'🏔️',d:[[.1,.84],[.32,.28],[.5,.58],[.68,.18],[.9,.84]],o:[0,1,2,3,4,0]},
+    {n:t('तारा','Star'),e:'⭐',d:star,o:[0,2,4,1,3,0]}];
+  const total=SH.reduce((s,x)=>s+x.o.length,0),RAD=26;
+  let si=0,k=0,done=0,strokes=[],cur=null,drawing=false,lastWrong=-1,busy=false;
+  const P=i=>[SH[si].d[i][0]*W,SH[si].d[i][1]*H];
+  function draw(){
+    const cs=getComputedStyle(document.documentElement),ink=cs.getPropertyValue('--ink').trim(),leaf=cs.getPropertyValue('--leaf').trim(),
+      mango=cs.getPropertyValue('--mango').trim(),surf=cs.getPropertyValue('--surface').trim();
+    ctx.clearRect(0,0,W,H);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=ink;ctx.lineWidth=4;
+    strokes.forEach(s=>{ctx.beginPath();s.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();});
+    const s=SH[si],visited=s.o.slice(0,k);
+    s.d.forEach((_,i)=>{const [x,y]=P(i),isT=k<s.o.length&&s.o[k]===i,v=visited.includes(i);
+      ctx.beginPath();ctx.arc(x,y,17,0,Math.PI*2);ctx.fillStyle=isT?mango:v?leaf:surf;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=ink;ctx.stroke();
+      ctx.fillStyle=v&&!isT?'#fff':ink;ctx.font='700 18px "Baloo 2", sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),x,y+1);
+      ctx.lineWidth=4;ctx.strokeStyle=ink;});
+  }
+  function check(x,y){
+    const s=SH[si];if(busy||k>=s.o.length)return;const ti=s.o[k],[tx,ty]=P(ti);
+    if(Math.hypot(x-tx,y-ty)<RAD){k++;done++;api.progress(done,total);tone(990,.08);lastWrong=-1;
+      if(k>=s.o.length){busy=true;drawing=false;api.good(t('बन गया! ','Done! ')+s.n+' '+s.e);api.later(next,1200);}
+      return;}
+    const vis=s.o.slice(0,k);
+    s.d.forEach((_,i)=>{if(i===ti||vis.includes(i))return;const [px,py]=P(i);
+      if(Math.hypot(x-px,y-py)<RAD&&lastWrong!==i){lastWrong=i;api.bad(t('पहले '+(ti+1)+' नंबर वाला बिंदु','Dot number '+(ti+1)+' first'));}});
+  }
+  function next(){si++;if(si>=SH.length){api.finish();return;}k=0;strokes=[];busy=false;lastWrong=-1;draw();api.say('');}
+  const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];};
+  cv.addEventListener('pointerdown',e=>{if(e.button!==0||busy)return;e.preventDefault();cv.setPointerCapture(e.pointerId);drawing=true;const p=pos(e);cur=[p];strokes.push(cur);check(p[0],p[1]);draw();});
+  cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=pos(e);cur.push(p);check(p[0],p[1]);draw();});
+  const up=()=>{drawing=false;};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  api.progress(0,total);draw();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
+}},
+/* 8 */{world:2,ic:'🎨',title:['रंग भरो','Fill the colours'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  api.task(t('पहले नीचे से रंग चुनो, फिर तस्वीर के हिस्से पर क्लिक करो। छोटी तस्वीर जैसा बनाओ','First pick a colour below, then click a part of the picture. Make it look like the small picture'));
+  api.say(t('Paint में भी बाल्टी (Fill) से ऐसे ही रंग भरते हैं','In Paint, the bucket (Fill) tool works the same way'));
+  const C={blue:['#7EC8F0',t('नीला','Blue')],yellow:['#F6C531',t('पीला','Yellow')],green:['#4CAF50',t('हरा','Green')],
+    orange:['#F08A3C',t('नारंगी','Orange')],red:['#D9443A',t('लाल','Red')],brown:['#8B5A2B',t('भूरा','Brown')]};
+  const R=[['sky','blue','<rect x="0" y="0" width="300" height="200"/>'],['sun','yellow','<circle cx="245" cy="45" r="24"/>'],
+    ['hill','green','<polygon points="0,150 70,70 130,140 190,60 300,150 300,200 0,200"/>'],['wall','orange','<rect x="60" y="120" width="80" height="70"/>'],
+    ['roof','red','<polygon points="50,122 100,80 150,122"/>'],['door','brown','<rect x="88" y="150" width="24" height="40"/>']];
+  const svg=(interactive)=>'<svg viewBox="0 0 300 200" width="100%" xmlns="http://www.w3.org/2000/svg">'+R.map(r=>r[2].replace(/^<(\w+)/,'<$1 '+
+    (interactive?'class="rg" data-r="'+r[0]+'" fill="#FFFFFF"':'fill="'+C[r[1]][0]+'" stroke="#2B2B2B" stroke-width="2"')))+'</svg>';
+  st.innerHTML='<div class="paint"><div class="canvas">'+svg(true)+'</div><div class="sample">'+t('ऐसा बनाओ:','Make it like this:')+svg(false)+'</div></div>';
+  const pal=el('div','pal');let chosen=null;
+  Object.keys(C).forEach(k=>{const b=el('button','sw');b.innerHTML='<i style="background:'+C[k][0]+'"></i>'+C[k][1];
+    b.addEventListener('click',()=>{chosen=k;pal.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b));api.say(t('अब तस्वीर में क्लिक करो','Now click the picture'));});
+    pal.appendChild(b);});
+  st.appendChild(pal);
+  const ok=new Set();
+  st.querySelectorAll('.rg').forEach(g=>g.addEventListener('click',()=>{
+    if(!chosen){api.say(t('पहले नीचे से कोई रंग चुनो','Pick a colour below first'));return;}
+    const id=g.dataset.r,target=R.find(r=>r[0]===id)[1];g.setAttribute('fill',C[chosen][0]);
+    if(chosen===target){if(!ok.has(id)){ok.add(id);api.good();}}else{ok.delete(id);api.bad(t('यह रंग ग़लत है। छोटी तस्वीर में देखो','Wrong colour. Check the small picture'));}
+    api.progress(ok.size,R.length);if(ok.size===R.length)api.later(api.finish,500);
+  }));
+  api.progress(0,R.length);
+}},
+/* 9 */{world:2,ic:'🔤',title:['शब्द चुनो (select)','Select words'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  const p=el('p','seltext');p.textContent=t('आज दुकान में ताज़ा आम आए हैं। सेब और केला भी है। घर तक फ़्री डिलीवरी मिलेगी।','Fresh mangoes arrived at the shop today. We also have apples and bananas. Free home delivery for everyone.');
+  st.appendChild(p);
+  const T=state.lang==='en'?[['mangoes','d'],['shop','d'],['apples','d'],['Fresh mangoes','g'],['home delivery','g'],['apples and bananas','g']]
+    :[['दुकान','d'],['आम','d'],['सेब','d'],['ताज़ा आम','g'],['फ़्री डिलीवरी','g'],['सेब और केला','g']];
+  const norm=s=>s.replace(/[।.,!?]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+  let n=0,last='';
+  function show(){const [w,m]=T[n];
+    api.task(m==='d'?t('“'+w+'” शब्द पर डबल क्लिक करो, वह नीला हो जाएगा','Double-click the word “'+w+'” to turn it blue')
+      :t('माउस दबाए रखकर “'+w+'” पर खींचो, ताकि सिर्फ़ यही नीला हो','Hold the mouse and drag across “'+w+'” so only this turns blue'));
+    api.say(m==='g'?t('शब्द से ठीक पहले से शुरू करो और ठीक बाद में छोड़ो','Start just before the words and let go just after them'):'');}
+  api.on(document,'mouseup',()=>setTimeout(()=>{if(n>=T.length)return;const s=window.getSelection().toString(),ns=norm(s);if(!ns)return;
+    if(ns===norm(T[n][0])){window.getSelection().removeAllRanges();n++;last='';api.progress(n,T.length);if(n>=T.length){api.good();api.later(api.finish,400);}else{show();api.good();}}
+    else if(ns!==last){last=ns;api.bad(t('आपने “'+s.trim()+'” चुना। चाहिए: “'+T[n][0]+'”','You selected “'+s.trim()+'”. We need “'+T[n][0]+'”'));}},20));
+  api.progress(0,T.length);show();
+}},
+/* 10 */{world:3,ic:'⌨️',title:['अक्षर ढूँढो','Find the letter'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  api.task(t('कीबोर्ड पर यह अक्षर ढूँढो और दबाओ','Find this letter on the keyboard and press it'));
+  const big=el('div','big');st.appendChild(big);
+  const kb=el('div','kb'),keys={};
+  ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach(row=>{const d=el('div');[...row].forEach(c=>{const k=el('span','key');k.textContent=c;keys[c]=k;d.appendChild(k);});kb.appendChild(d);});
+  st.appendChild(kb);
+  const seq=shuffle([...'ASDFJKL']).slice(0,5).concat(shuffle([...'QWERTYUIOPGHZXCVBNM']).slice(0,10));
+  const total=seq.length;let n=0,ht=null;
+  function show(){Object.values(keys).forEach(k=>k.className='key');big.textContent=seq[n];clearTimeout(ht);
+    ht=setTimeout(()=>{keys[seq[n]].classList.add('hl');api.say(t('पीला बटन देखो, वही है','Look at the yellow key, that is the one'));},5000);}
+  api.cleanup(()=>clearTimeout(ht));
+  api.on(document,'keydown',e=>{if(e.ctrlKey||e.altKey||e.metaKey||e.key.length!==1)return;e.preventDefault();
+    const k=e.key.toUpperCase();
+    if(k===seq[n]){keys[k].className='key ok';n++;api.good();api.progress(n,total);if(n>=total){clearTimeout(ht);api.later(api.finish,350);}else setTimeout(show,250);}
+    else{api.bad(t('यह “'+k+'” था। ढूँढो: '+seq[n],'That was “'+k+'”. Find: '+seq[n]));keys[seq[n]].classList.add('hl');}});
+  api.progress(0,total);show();
+}},
+/* 11 */{world:3,ic:'⏎',title:['ख़ास बटन','Special keys'],
+start(api){
+  const st=api.stage;st.classList.add('pad','center');
+  const T=[
+    ['Space',t('Space दबाओ। यह सबसे लंबा बटन है, शब्दों के बीच जगह देता है','Press Space. It is the longest key and puts a gap between words'),e=>e.code==='Space'],
+    ['Enter',t('Enter दबाओ। यह “हाँ, आगे बढ़ो” का बटन है','Press Enter. It means “yes, go ahead”'),e=>e.key==='Enter'],
+    ['Backspace',t('Backspace दबाओ। यह पीछे का अक्षर मिटाता है','Press Backspace. It erases the letter behind'),e=>e.key==='Backspace'],
+    ['Shift + A',t('Shift पकड़े रहो और A दबाओ। बड़ा (capital) A बनेगा','Hold Shift and press A. You get a capital A'),e=>e.key==='A'],
+    ['5',t('ऊपर वाली लाइन में 5 दबाओ','Press 5 in the top row'),e=>e.key==='5'],
+    ['↑',t('तीर वाला बटन ↑ (ऊपर) दबाओ','Press the ↑ (up) arrow'),e=>e.key==='ArrowUp'],
+    ['→',t('तीर वाला बटन → (दायाँ) दबाओ','Press the → (right) arrow'),e=>e.key==='ArrowRight'],
+    ['Shift + M',t('Shift पकड़े रहो और M दबाओ','Hold Shift and press M'),e=>e.key==='M'],
+    ['Delete',t('Delete दबाओ। यह आगे का अक्षर मिटाता है','Press Delete. It erases the letter in front'),e=>e.key==='Delete'],
+    ['Esc',t('Esc दबाओ। सबसे ऊपर बाएँ कोने में है, “रुको/बंद करो” का बटन','Press Esc. Top-left corner, the “stop/close” key'),e=>e.key==='Escape']];
+  const NAMES={' ':'Space',ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→',Escape:'Esc'};
+  const cap=el('div','cap');st.appendChild(cap);const total=T.length;let n=0;
+  const show=()=>{cap.textContent=T[n][0];api.task(T[n][1]);};
+  api.on(document,'keydown',e=>{
+    if(['Shift','Control','Alt','Meta','CapsLock','Fn'].includes(e.key)||e.ctrlKey||e.altKey||e.metaKey)return;
+    e.preventDefault();
+    if(T[n][2](e)){n++;api.good();api.progress(n,total);if(n>=total)api.later(api.finish,300);else show();}
+    else api.bad(t('आपने “'+(NAMES[e.key]||e.key)+'” दबाया। चाहिए: '+T[n][0],'You pressed “'+(NAMES[e.key]||e.key)+'”. We need: '+T[n][0]));});
+  api.progress(0,total);show();
+}},
+/* 12 */{world:3,ic:'✍️',title:['दुकान के शब्द लिखो','Type shop words'],
+start(api){
+  const st=api.stage;st.classList.add('pad','center');
+  const W=[['apple','🍎','सेब'],['mango','🥭','आम'],['banana','🍌','केला'],['orange','🍊','संतरा'],['grapes','🍇','अंगूर'],['rice','🍚','चावल'],['milk','🥛','दूध'],['Singtam','🏔️','सिंगताम']];
+  const em=el('div');em.style.fontSize='64px';const mean=el('div','mean');const wd=el('div','word');
+  const inp=el('input','inp');inp.autocomplete='off';inp.spellcheck=false;inp.setAttribute('aria-label',t('यहाँ लिखो','Type here'));
+  const nt=el('p','note');nt.textContent=t('ग़लती हो तो Backspace से मिटाओ। लिखकर Enter दबाओ।','Made a mistake? Erase with Backspace. Press Enter when done.');
+  st.append(em,mean,wd,inp,nt);
+  const total=W.length;let n=0;
+  function paint(){const w=W[n][0],v=inp.value;wd.innerHTML=[...w].map((c,i)=>i<v.length?'<span class="'+(v[i].toLowerCase()===c.toLowerCase()?'ok':'no')+'">'+c+'</span>':c).join('');}
+  function show(){em.textContent=W[n][1];mean.textContent=state.lang==='en'?'':W[n][2];inp.value='';paint();api.task(t('नीचे डिब्बे में लिखो: ','Type in the box: ')+W[n][0]);inp.focus();}
+  inp.addEventListener('input',paint);
+  inp.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();
+    if(inp.value.trim().toLowerCase()===W[n][0].toLowerCase()){n++;api.good();api.progress(n,total);if(n>=total)api.later(api.finish,300);else show();}
+    else api.bad(t('लाल अक्षर ग़लत हैं। Backspace से मिटाकर ठीक करो','Red letters are wrong. Erase with Backspace and fix them'));});
+  api.progress(0,total);show();
+}},
+/* 13 */{world:3,ic:'📝',title:['वाक्य लिखो','Type sentences'],
+start(api){
+  const st=api.stage;st.classList.add('pad','center');
+  const W=[['I have a shop.','मेरी एक दुकान है।'],['Mango is sweet.','आम मीठा है।'],['Apple is red.','सेब लाल है।'],['We sell fruit.','हम फल बेचते हैं।'],['Come to Singtam.','सिंगताम आओ।']];
+  const mean=el('div','mean'),wd=el('div','word sm'),inp=el('input','inp');inp.style.width='min(620px,100%)';inp.autocomplete='off';inp.spellcheck=false;
+  inp.setAttribute('aria-label',t('यहाँ लिखो','Type here'));
+  const nt=el('p','note');nt.textContent=t('बड़ा अक्षर: Shift पकड़कर। पूर्ण विराम (.): M के दाएँ, कॉमा (,) के बगल वाला बटन। आख़िर में Enter।','Capital letter: hold Shift. Full stop (.): the key next to the comma (,), right of M. Press Enter at the end.');
+  st.append(mean,wd,inp,nt);const total=W.length;let n=0;
+  function paint(){const w=W[n][0],v=inp.value;wd.innerHTML=[...w].map((c,i)=>{const s=c===' '?'&nbsp;':c;return i<v.length?'<span class="'+(v[i]===c?'ok':'no')+'">'+s+'</span>':s;}).join('');}
+  function show(){mean.textContent=state.lang==='en'?'':W[n][1];inp.value='';paint();api.task(t('बिल्कुल ऐसे ही लिखो, बड़े अक्षर और (.) के साथ','Type it exactly like this, with capitals and the full stop'));inp.focus();}
+  inp.addEventListener('input',paint);
+  inp.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();
+    if(inp.value.replace(/\s+/g,' ').trim()===W[n][0]){n++;api.good();api.progress(n,total);if(n>=total)api.later(api.finish,300);else show();}
+    else api.bad(t('लाल अक्षर देखो। बड़ा अक्षर और पूर्ण विराम (.) भी ज़रूरी हैं','Check the red letters. Capitals and the full stop matter too'));});
+  api.progress(0,total);show();
+}},
+/* 14 */{world:3,boss:true,ic:'👑',title:['बॉस: टाइपिंग रेस','Boss: typing race'],
+start(api){
+  const st=api.stage;st.classList.add('pad','center');
+  const words=shuffle(['mango','apple','kiwi','lemon','grapes','banana','orange','milk','rice','sugar','salt','bread']).slice(0,10);
+  const clock=el('div','race'),wd=el('div','word'),inp=el('input','inp');inp.autocomplete='off';inp.spellcheck=false;inp.setAttribute('aria-label',t('यहाँ लिखो','Type here'));
+  const nt=el('p','note');nt.textContent=t('शब्द लिखो और Space या Enter दबाओ। घड़ी पहला अक्षर दबाते ही चलेगी।','Type the word and press Space or Enter. The clock starts with your first key.');
+  st.append(clock,wd,inp,nt);
+  const total=words.length;let n=0,t0=0,iv=null;
+  const sec=()=>t0?Math.round((Date.now()-t0)/1000):0;
+  const tick=()=>{clock.textContent='⏱ '+sec()+t(' सेकंड',' sec');};
+  api.cleanup(()=>clearInterval(iv));
+  function show(){wd.textContent=words[n];inp.value='';tick();api.task(t('जितना जल्दी हो सके लिखो','Type as fast as you can'));inp.focus();}
+  inp.addEventListener('keydown',e=>{
+    if(!t0&&e.key.length===1){t0=Date.now();iv=setInterval(tick,250);}
+    if(e.key!==' '&&e.key!=='Enter')return;e.preventDefault();
+    if(inp.value.trim().toLowerCase()===words[n]){n++;api.good();api.progress(n,total);
+      if(n>=total){clearInterval(iv);tick();api.note(t('समय: '+sec()+' सेकंड। अगली बार इससे कम करो!','Time: '+sec()+' seconds. Beat it next time!'));api.later(api.finish,300);}else show();}
+    else api.bad(t('स्पेलिंग ग़लत है, ठीक करो','Wrong spelling, fix it'));});
+  api.progress(0,total);show();
+}},
+/* 15 */{world:4,ic:'📋',title:['कॉपी, पेस्ट, अनडू','Copy, paste, undo'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  st.innerHTML='<label class="lbl" for="ta"></label><textarea id="ta" class="inp" readonly></textarea><label class="lbl" for="tb"></label><textarea id="tb" class="inp"></textarea>';
+  const A=st.querySelector('#ta'),B=st.querySelector('#tb'),lb=st.querySelectorAll('.lbl');
+  lb[0].textContent=t('डिब्बा 1','Box 1');lb[1].textContent=t('डिब्बा 2 (ख़ाली)','Box 2 (empty)');
+  A.value=t('आज ताज़ा आम, सेब और केला आया है। घर तक फ़्री डिलीवरी।','Fresh mangoes, apples and bananas today. Free home delivery.');
+  const is=x=>ty=>ty===x;
+  const go=stepper(api,[
+    {t:t('डिब्बा 1 के अंदर क्लिक करो','Click inside Box 1'),ok:is('fa')},
+    {t:t('<kbd>Ctrl</kbd> पकड़ो और <kbd>A</kbd> दबाओ। सब नीला (select) हो जाएगा','Hold <kbd>Ctrl</kbd> and press <kbd>A</kbd>. Everything turns blue (selected)'),ok:is('sa')},
+    {t:t('<kbd>Ctrl</kbd> + <kbd>C</kbd> दबाओ। कॉपी हो गया (दिखेगा नहीं, पर याद हो गया)','Press <kbd>Ctrl</kbd> + <kbd>C</kbd>. It is copied (you won’t see it, but it is remembered)'),ok:is('copy')},
+    {t:t('डिब्बा 2 के अंदर क्लिक करो','Click inside Box 2'),ok:is('fb')},
+    {t:t('<kbd>Ctrl</kbd> + <kbd>V</kbd> दबाओ। पेस्ट हो जाएगा','Press <kbd>Ctrl</kbd> + <kbd>V</kbd>. It gets pasted'),ok:is('paste')},
+    {t:t('<kbd>Ctrl</kbd> + <kbd>Z</kbd> दबाओ। पिछला काम वापस (undo) हो जाएगा','Press <kbd>Ctrl</kbd> + <kbd>Z</kbd>. The last action is undone'),ok:is('undo')},
+    {t:t('फिर से <kbd>Ctrl</kbd> + <kbd>V</kbd> दबाओ','Press <kbd>Ctrl</kbd> + <kbd>V</kbd> again'),ok:is('paste')}],st);
+  const ctrl=(e,k)=>(e.ctrlKey||e.metaKey)&&e.key.toLowerCase()===k;
+  A.addEventListener('focus',()=>go('fa'));A.addEventListener('click',()=>go('fa'));
+  A.addEventListener('keydown',e=>{if(ctrl(e,'a'))setTimeout(()=>go('sa'),30);});
+  A.addEventListener('copy',()=>{if(A.selectionEnd-A.selectionStart>5)go('copy');});
+  B.addEventListener('focus',()=>go('fb'));B.addEventListener('click',()=>go('fb'));
+  B.addEventListener('paste',()=>setTimeout(()=>{if(B.value.length>5)go('paste');},30));
+  B.addEventListener('keydown',e=>{if(ctrl(e,'z'))setTimeout(()=>go('undo'),60);});
+  api.say(t('राइट क्लिक से भी Copy/Paste होता है, पर यहाँ शॉर्टकट सीखो','Right-click also has Copy/Paste, but practise the shortcut here'));
+}},
+/* 16 */{world:4,ic:'🎬',title:['फ़ोल्डर खोलो, मूवी चलाओ','Open folders, play a movie'],
+start(api){
+  const N=deskNames();let go=()=>{};
+  makeDesk(api,N,(ty,i)=>go(ty,i));
+  const nm=(x,name)=>x&&x.name===name;
+  go=stepper(api,[
+    {t:t('“'+N.my+'” फ़ोल्डर पर डबल क्लिक करो','Double-click the “'+N.my+'” folder'),ok:(ty,i)=>ty==='open'&&nm(i,N.my)},
+    {t:t('अब “'+N.movies+'” पर डबल क्लिक करो','Now double-click “'+N.movies+'”'),ok:(ty,i)=>ty==='open'&&nm(i,N.movies)},
+    {t:t('“'+N.song+'” पर डबल क्लिक करो, गाना चलेगा','Double-click “'+N.song+'” to play it'),ok:ty=>ty==='play'},
+    {t:t('⏸ बटन दबाकर रोको','Press ⏸ to pause'),ok:ty=>ty==='pause'},
+    {t:t('▶ दबाकर फिर चलाओ','Press ▶ to play again'),ok:ty=>ty==='resume'},
+    {t:t('दाएँ नीचे ✕ दबाकर प्लेयर बंद करो','Press ✕ at the bottom right to close the player'),ok:ty=>ty==='closeplayer'},
+    {t:t('ऊपर बाएँ ← दबाओ, पिछले फ़ोल्डर में जाओगे','Press ← at the top left to go back one folder'),ok:ty=>ty==='back'},
+    {t:t('ऊपर दाएँ ✕ से खिड़की बंद करो','Close the window with ✕ at the top right'),ok:ty=>ty==='close'}],api.stage);
+  api.say(t('यह नकली कंप्यूटर है, यहाँ कुछ भी ख़राब नहीं होगा','This is a pretend computer. Nothing here can break'));
+}},
+/* 17 */{world:4,ic:'🗂️',title:['फ़ाइल कॉपी-पेस्ट','Copy-paste files'],
+start(api){
+  const N=deskNames();let go=()=>{};
+  makeDesk(api,N,(ty,i)=>go(ty,i));
+  const nm=(x,name)=>x&&x.name===name;
+  go=stepper(api,[
+    {t:t('“'+N.my+'” खोलो (डबल क्लिक)','Open “'+N.my+'” (double-click)'),ok:(ty,i)=>ty==='open'&&nm(i,N.my)},
+    {t:t('“'+N.photos+'” खोलो','Open “'+N.photos+'”'),ok:(ty,i)=>ty==='open'&&nm(i,N.photos)},
+    {t:t('“'+N.shopPhoto+'” पर RIGHT क्लिक करो, फिर “'+N.copy+'” चुनो','Right-click “'+N.shopPhoto+'”, then choose “'+N.copy+'”'),ok:(ty,i)=>ty==='copy'&&i.m==='menu'&&i.n.type==='image'},
+    {t:t('✕ से खिड़की बंद करो','Close the window with ✕'),ok:ty=>ty==='close'},
+    {t:t('डेस्कटॉप पर “'+N.shop+'” फ़ोल्डर खोलो','Open the “'+N.shop+'” folder on the desktop'),ok:(ty,i)=>ty==='open'&&nm(i,N.shop)},
+    {t:t('खिड़की की ख़ाली जगह पर RIGHT क्लिक करो, फिर “'+N.paste+'” चुनो','Right-click an empty space in the window, then choose “'+N.paste+'”'),ok:(ty,i)=>ty==='paste'&&i.m==='menu'&&nm(i.f,N.shop)},
+    {t:t('अब फ़ोटो पर सिर्फ़ एक बार क्लिक करो (चुनो)','Now click the photo just once (select it)'),ok:(ty,i)=>ty==='select'&&i.type==='image'},
+    {t:t('<kbd>Ctrl</kbd> + <kbd>C</kbd> दबाओ','Press <kbd>Ctrl</kbd> + <kbd>C</kbd>'),ok:(ty,i)=>ty==='copy'&&i.m==='key'},
+    {t:t('✕ से खिड़की बंद करो','Close the window with ✕'),ok:ty=>ty==='close'},
+    {t:t('<kbd>Ctrl</kbd> + <kbd>V</kbd> दबाओ, फ़ोटो डेस्कटॉप पर आ जाएगी','Press <kbd>Ctrl</kbd> + <kbd>V</kbd>. The photo lands on the desktop'),ok:(ty,i)=>ty==='paste'&&i.m==='key'&&i.f.name==='Desktop'}],api.stage);
+  api.say(t('असली Windows 11 में राइट क्लिक मेनू में Copy/Paste ऊपर छोटे निशान के रूप में भी दिखते हैं','On real Windows 11, Copy and Paste can show as small icons at the top of the right-click menu'));
+}},
+/* 18 */{world:4,ic:'📁',title:['नया फ़ोल्डर, डिलीट, वापस','New folder, delete, restore'],
+start(api){
+  const N=deskNames();let go=()=>{};
+  makeDesk(api,N,(ty,i)=>{ if(ty==='rename'&&i.isNew&&i.name===N.newf)api.say(t('नाम नहीं बदला। फ़ोल्डर पर RIGHT क्लिक → “'+N.ren+'”','The name did not change. Right-click the folder → “'+N.ren+'”')); go(ty,i);});
+  go=stepper(api,[
+    {t:t('डेस्कटॉप की ख़ाली जगह पर RIGHT क्लिक करो → “'+N.newf+'”','Right-click an empty part of the desktop → “'+N.newf+'”'),ok:ty=>ty==='newfolder'},
+    {t:t('अपना नाम लिखो और Enter दबाओ','Type your name and press Enter'),ok:(ty,i)=>ty==='rename'&&i.isNew&&i.name!==N.newf},
+    {t:t('अपने नए फ़ोल्डर पर डबल क्लिक करो','Double-click your new folder'),ok:(ty,i)=>ty==='open'&&i.isNew},
+    {t:t('✕ से खिड़की बंद करो','Close the window with ✕'),ok:ty=>ty==='close'},
+    {t:t('फ़ोल्डर पर एक बार क्लिक करो, फिर कीबोर्ड पर Delete दबाओ','Click the folder once, then press Delete on the keyboard'),ok:(ty,i)=>ty==='delete'&&i.n.isNew},
+    {t:t('“Recycle Bin” पर डबल क्लिक करो','Double-click “Recycle Bin”'),ok:(ty,i)=>ty==='open'&&i.type==='bin'},
+    {t:t('अपने फ़ोल्डर पर RIGHT क्लिक करो → “'+N.restore+'”','Right-click your folder → “'+N.restore+'”'),ok:(ty,i)=>ty==='restore'&&i.isNew},
+    {t:t('✕ से खिड़की बंद करो। फ़ोल्डर वापस डेस्कटॉप पर है','Close the window with ✕. Your folder is back on the desktop'),ok:ty=>ty==='close'}],api.stage);
+}},
+/* 19 */{world:4,ic:'🪟',title:['खिड़कियों का खेल','The window game'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  const desk=el('div','desk'),tb=el('div','taskbar');desk.appendChild(tb);st.appendChild(desk);
+  const A=[{id:'paint',ic:'🎨',name:'Paint',x:24,y:14},{id:'web',ic:'🌐',name:t('ब्राउज़र','Browser'),x:150,y:74},{id:'music',ic:'🎵',name:t('गाने','Music'),x:90,y:44}];
+  A.forEach(a=>{a.open=false;a.min=false;a.max=false;a.z=0;});let Z=1,go=()=>{};
+  const ev=(ty,id)=>go(ty,id);
+  const top=()=>A.filter(a=>a.open&&!a.min).sort((x,y)=>y.z-x.z)[0];
+  function bar(){tb.innerHTML='<span>⊞</span>';const tp=top();
+    A.forEach(a=>{const b=el('button','tbtn'+(a.open?' open':'')+(tp===a?' top':''));b.textContent=a.ic;b.setAttribute('aria-label',a.name);b.title=a.name;
+      b.addEventListener('click',e=>{e.stopPropagation();
+        if(!a.open){a.open=true;a.min=false;a.z=++Z;render();ev('open',a.id);}
+        else if(a.min){a.min=false;a.z=++Z;render();ev('restore',a.id);}
+        else if(top()===a){a.min=true;render();ev('min',a.id);}
+        else{a.z=++Z;render();ev('front',a.id);}});
+      tb.appendChild(b);});}
+  function render(){desk.querySelectorAll('.appwin').forEach(x=>x.remove());bar();
+    A.filter(a=>a.open&&!a.min).forEach(a=>{
+      const w=el('div','appwin'+(a.max?' max':''));w.style.left=a.x+'px';w.style.top=a.y+'px';w.style.zIndex=a.z;
+      const b=el('div','wbar'),ti=el('span','p'),mn=el('button','wbtn'),mx=el('button','wbtn'),cl=el('button','wbtn x');
+      ti.textContent=a.ic+' '+a.name;mn.textContent='_';mx.textContent=a.max?'❐':'▢';cl.textContent='✕';
+      mn.setAttribute('aria-label',t('छोटा करो','Minimise'));mx.setAttribute('aria-label',t('बड़ा करो','Maximise'));cl.setAttribute('aria-label',t('बंद करो','Close'));
+      mn.addEventListener('click',e=>{e.stopPropagation();a.min=true;render();ev('min',a.id);});
+      mx.addEventListener('click',e=>{e.stopPropagation();a.max=!a.max;a.z=++Z;render();ev(a.max?'max':'unmax',a.id);});
+      cl.addEventListener('click',e=>{e.stopPropagation();a.open=false;a.max=false;render();ev('close',a.id);});
+      w.addEventListener('mousedown',()=>{if(top()!==a){a.z=++Z;w.style.zIndex=a.z;bar();ev('front',a.id);}});
+      b.append(ti,mn,mx,cl);const body=el('div','appbody');body.textContent=a.ic;w.append(b,body);desk.insertBefore(w,tb);});}
+  const is=(x,id)=>(ty,i)=>ty===x&&i===id;
+  go=stepper(api,[
+    {t:t('नीचे टास्कबार में 🎨 पर क्लिक करो, Paint खुलेगा','Click 🎨 on the taskbar at the bottom to open Paint'),ok:is('open','paint')},
+    {t:t('ऊपर दाएँ _ दबाओ, खिड़की नीचे छुप जाएगी (छोटी)','Press _ at the top right to hide the window (minimise)'),ok:is('min','paint')},
+    {t:t('टास्कबार में 🎨 पर फिर क्लिक करो, खिड़की वापस आएगी','Click 🎨 on the taskbar again to bring it back'),ok:is('restore','paint')},
+    {t:t('▢ दबाओ, खिड़की पूरी स्क्रीन पर बड़ी हो जाएगी','Press ▢ to make it fill the screen (maximise)'),ok:is('max','paint')},
+    {t:t('❐ दबाकर पहले जैसा करो','Press ❐ to make it normal again'),ok:is('unmax','paint')},
+    {t:t('टास्कबार से 🌐 ब्राउज़र खोलो','Open 🌐 Browser from the taskbar'),ok:is('open','web')},
+    {t:t('पीछे वाली Paint खिड़की पर कहीं भी क्लिक करो, वह आगे आ जाएगी','Click anywhere on the Paint window behind, it comes to the front'),ok:is('front','paint')},
+    {t:t('Paint का ✕ दबाकर बंद करो','Close Paint with its ✕'),ok:is('close','paint')},
+    {t:t('ब्राउज़र का ✕ दबाकर बंद करो','Close the Browser with its ✕'),ok:is('close','web')}],st);
+  api.say(t('असली लैपटॉप पर Alt + Tab से भी खिड़की बदलते हैं','On the real laptop, Alt + Tab also switches windows'));
+  render();
+}},
+/* 20 */{world:4,ic:'💾',title:['लिखो और सेव करो','Write and save'],
+start(api){
+  const st=api.stage;st.classList.add('pad');const N=deskNames();
+  const desk=el('div','desk'),di=el('div','dicons'),tb=el('div','taskbar');tb.innerHTML='<span>⊞</span><span>📝</span>';desk.append(di,tb);st.appendChild(desk);
+  const F={desk:{name:t('डेस्कटॉप','Desktop'),ic:'🖥️',files:[]},my:{name:N.my,ic:'📁',files:[]},shop:{name:N.shop,ic:'📁',files:[]}};
+  const untitled=t('बिना नाम','Untitled');
+  let np=null,dlg=null,fw=null,go=()=>{};const ev=(a,b)=>go(a,b);
+  function icon(ic,label,dbl){const b=el('div','ico');b.innerHTML='<span class="e">'+ic+'</span>';const s=el('span');s.textContent=label;b.appendChild(s);
+    b.addEventListener('click',e=>{e.stopPropagation();desk.querySelectorAll('.ico').forEach(x=>x.classList.toggle('sel',x===b));});
+    b.addEventListener('dblclick',e=>{e.stopPropagation();dbl();});return b;}
+  function renderDesk(){di.innerHTML='';di.appendChild(icon('📝','Notepad',()=>openNp(null)));
+    di.appendChild(icon('📁',F.my.name,()=>openFolder('my')));di.appendChild(icon('📁',F.shop.name,()=>openFolder('shop')));
+    F.desk.files.forEach(f=>di.appendChild(icon('📄',f.name+'.txt',()=>openNp(f))));}
+  function openFolder(k){fw=k;renderFolder();ev('openfolder',k);}
+  function renderFolder(){const old=desk.querySelector('.fwin');if(old)old.remove();if(!fw)return;
+    const w=el('div','win fwin'),b=el('div','wbar'),p=el('span','p'),x=el('button','wbtn x');p.textContent=F[fw].name;x.textContent='✕';
+    x.addEventListener('click',e=>{e.stopPropagation();fw=null;renderFolder();ev('closefolder');});b.append(p,x);
+    const body=el('div','wbody');
+    if(!F[fw].files.length){const em=el('div','empty');em.textContent=N.empty;body.appendChild(em);}
+    F[fw].files.forEach(f=>body.appendChild(icon('📄',f.name+'.txt',()=>openNp(f))));
+    w.addEventListener('click',e=>e.stopPropagation());w.append(b,body);desk.insertBefore(w,tb);}
+  function openNp(file){np={text:file?file.text:'',file:file||null};renderNp();if(file)ev('reopen',file);}
+  function renderNp(){const old=desk.querySelector('.npwin');if(old)old.remove();if(!np)return;
+    const w=el('div','win npwin'),b=el('div','wbar'),p=el('span','p'),x=el('button','wbtn x');
+    p.textContent='📝 '+(np.file?np.file.name+'.txt':untitled)+' - Notepad';x.textContent='✕';
+    x.addEventListener('click',e=>{e.stopPropagation();np=null;closeDlg();renderNp();ev('close');});b.append(p,x);
+    const mb=el('div','npmenu'),fb=el('button');fb.textContent=t('फ़ाइल','File');mb.appendChild(fb);
+    fb.addEventListener('click',e=>{e.stopPropagation();if(mb.querySelector('.menu'))return;const m=el('div','menu');m.style.left='8px';m.style.top='32px';
+      const sv=el('button');sv.textContent=t('सेव करो (Ctrl+S)','Save (Ctrl+S)');sv.addEventListener('click',y=>{y.stopPropagation();m.remove();save();});m.appendChild(sv);mb.appendChild(m);});
+    const ta=el('textarea','npta');ta.value=np.text;ta.setAttribute('aria-label','Notepad');
+    ta.addEventListener('input',()=>{np.text=ta.value;if(ta.value.trim().length>=3)ev('typed');});
+    w.addEventListener('click',e=>{e.stopPropagation();const m=mb.querySelector('.menu');if(m&&!m.contains(e.target)&&e.target!==fb)m.remove();});
+    w.append(b,mb,ta);desk.insertBefore(w,tb);setTimeout(()=>ta.focus(),0);}
+  function save(){if(!np)return;if(np.file){np.file.text=np.text;api.say(t('सेव हो गया','Saved'));ev('resaved');return;}openDlg();}
+  function closeDlg(){if(dlg){dlg.remove();dlg=null;}}
+  function openDlg(){closeDlg();let cur='desk';
+    dlg=el('div','dlg');dlg.addEventListener('click',e=>e.stopPropagation());
+    dlg.innerHTML='<div class="dt"></div><div class="db"><div class="places"></div><div class="dfiles"></div></div><div class="dfoot"><label></label><input><button class="btn ghost c"></button><button class="btn s"></button></div>';
+    const pl=dlg.querySelector('.places'),df=dlg.querySelector('.dfiles'),inp=dlg.querySelector('input'),lab=dlg.querySelector('label');
+    dlg.querySelector('.dt').textContent=t('इस नाम से सेव करो','Save as');lab.textContent=t('फ़ाइल का नाम:','File name:');inp.value=untitled;inp.id='fname';lab.htmlFor='fname';
+    dlg.querySelector('.c').textContent=t('रद्द करो','Cancel');dlg.querySelector('.s').textContent=t('सेव','Save');
+    function paint(){pl.innerHTML='';Object.keys(F).forEach(k=>{const b=el('button',k===cur?'on':'');b.textContent=F[k].ic+' '+F[k].name;
+      b.addEventListener('click',()=>{cur=k;paint();ev('pick',k);});pl.appendChild(b);});
+      df.textContent=F[cur].files.length?F[cur].files.map(f=>'📄 '+f.name+'.txt').join('\n'):N.empty;}
+    paint();
+    inp.addEventListener('input',()=>{const v=inp.value.trim();if(v&&v!==untitled)ev('name',v);});
+    const doSave=()=>{if(cur!=='shop'){api.bad(t('पहले बाएँ “'+N.shop+'” चुनो, फ़ाइल वहीं रखनी है','First choose “'+N.shop+'” on the left, the file goes there'));return;}
+      const v=inp.value.trim()||untitled,f={name:v,text:np.text};F[cur].files.push(f);np.file=f;closeDlg();renderNp();renderDesk();renderFolder();ev('saved',cur);};
+    inp.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();doSave();}});
+    dlg.querySelector('.s').addEventListener('click',doSave);dlg.querySelector('.c').addEventListener('click',()=>{closeDlg();ev('cancel');});
+    desk.appendChild(dlg);ev('dialog');setTimeout(()=>{inp.focus();inp.select();},0);}
+  api.on(document,'keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(np&&!dlg)save();}});
+  desk.addEventListener('click',()=>{desk.querySelectorAll('.ico').forEach(x=>x.classList.remove('sel'));const m=desk.querySelector('.npmenu .menu');if(m)m.remove();});
+  const is=x=>ty=>ty===x;
+  go=stepper(api,[
+    {t:t('Notepad में कुछ भी लिखो, जैसे: aaj ka order','Type anything in Notepad, like: today’s order'),ok:is('typed')},
+    {t:t('<kbd>Ctrl</kbd> + <kbd>S</kbd> दबाओ (या ऊपर फ़ाइल → सेव करो)','Press <kbd>Ctrl</kbd> + <kbd>S</kbd> (or File → Save at the top)'),ok:is('dialog')},
+    {t:t('बाएँ “'+N.shop+'” चुनो','Choose “'+N.shop+'” on the left'),ok:(ty,i)=>ty==='pick'&&i==='shop'},
+    {t:t('नाम वाले डिब्बे में नाम लिखो, जैसे: order','Type a name in the name box, like: order'),ok:is('name')},
+    {t:t('“सेव” बटन दबाओ','Press the “Save” button'),ok:(ty,i)=>ty==='saved'},
+    {t:t('ऊपर दाएँ ✕ से Notepad बंद करो','Close Notepad with ✕ at the top right'),ok:is('close')},
+    {t:t('डेस्कटॉप पर “'+N.shop+'” फ़ोल्डर खोलो (डबल क्लिक)','Open the “'+N.shop+'” folder on the desktop (double-click)'),ok:(ty,i)=>ty==='openfolder'&&i==='shop'},
+    {t:t('अपनी फ़ाइल पर डबल क्लिक करो, लिखा हुआ वापस दिखेगा','Double-click your file, your writing comes back'),ok:is('reopen')}],st);
+  renderDesk();openNp(null);
+}},
+/* 21 */{world:5,ic:'🔎',title:['इंटरनेट पर खोजो','Search the internet'],
+start(api){
+  let go=()=>{};
+  makeBrowser(api,(ty,i)=>{if(ty==='ad')api.bad(t('यह विज्ञापन (Ad) है। “इनाम जीतो” वाले लिंक अक्सर धोखा होते हैं। कभी OTP मत डालो','This is an ad. “Win a prize” links are often scams. Never enter an OTP'));go(ty,i);});
+  go=stepper(api,[
+    {t:t('ऊपर पते वाली लंबी पट्टी में क्लिक करो','Click the long address bar at the top'),ok:ty=>ty==='focusaddr'},
+    {t:t('वहाँ लिखो: aam ke fayde, फिर Enter दबाओ','Type: mango benefits, then press Enter'),ok:ty=>ty==='search'},
+    {t:t('पहले असली नतीजे के नीले लिंक पर क्लिक करो। “Ad” वाले पर नहीं!','Click the blue link of the first real result. Not the “Ad” one!'),ok:(ty,i)=>ty==='nav'&&i.p==='article'},
+    {t:t('नीचे तक स्क्रॉल करके पूरा लेख देखो','Scroll down to the end of the article'),ok:ty=>ty==='end'},
+    {t:t('ऊपर ← (पीछे) दबाओ, नतीजों पर वापस जाओगे','Press ← (back) at the top to return to the results'),ok:ty=>ty==='back'},
+    {t:t('⟳ दबाकर पेज ताज़ा (refresh) करो','Press ⟳ to refresh the page'),ok:ty=>ty==='refresh'}],api.stage);
+}},
+/* 22 */{world:5,ic:'🗂️',title:['टैब खोलो, बदलो, बंद करो','Open, switch and close tabs'],
+start(api){
+  let go=()=>{};
+  makeBrowser(api,(ty,i)=>go(ty,i));
+  go=stepper(api,[
+    {t:t('टैब के बगल में + दबाकर नया टैब खोलो','Press + next to the tab to open a new tab'),ok:ty=>ty==='newtab'},
+    {t:t('ऊपर पट्टी में लिखो: youtube.com, फिर Enter','Type youtube.com in the bar, then press Enter'),ok:(ty,i)=>ty==='nav'&&i.p==='video'},
+    {t:t('▶ दबाकर गाना चलाओ','Press ▶ to play the song'),ok:ty=>ty==='playvideo'},
+    {t:t('पहले टैब (बाएँ वाला) पर क्लिक करो','Click the first tab (on the left)'),ok:(ty,i)=>ty==='switch'&&i===0},
+    {t:t('दूसरे टैब का छोटा ✕ दबाकर उसे बंद करो','Close the second tab with its small ✕'),ok:ty=>ty==='closetab'},
+    {t:t('सबसे ऊपर दाएँ बड़ा ✕ दबाकर ब्राउज़र बंद करो','Press the big ✕ at the top right to close the browser'),ok:ty=>ty==='closebrowser'}],api.stage);
+  api.say(t('असली Chrome में Ctrl + T नया टैब, Ctrl + W टैब बंद','In real Chrome, Ctrl + T opens a tab, Ctrl + W closes it'));
+}},
+/* 23 */{world:5,ic:'💬',title:['ग्राहक का ऑर्डर (चैट)','A customer order (chat)'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  const C=el('div','chat'),L=el('div','clist'),M=el('div','cmain');C.append(L,M);st.appendChild(C);
+  const P=[{id:'ram',name:t('राम भैया (ग्राहक)','Ram bhaiya (customer)'),av:'👨',unread:1,m:[{t:t('भैया, 2 किलो आम और 1 दर्जन केला घर भेज दो 🙏','Bhaiya, please send 2 kg mangoes and 1 dozen bananas home 🙏')}]},
+    {id:'sita',name:t('सीता दीदी','Sita didi'),av:'👩',unread:1,m:[{t:t('कल दुकान खुली है?','Is the shop open tomorrow?')}]},
+    {id:'grp',name:t('दुकान ग्रुप','Shop group'),av:'👥',unread:0,m:[{t:t('आज नया माल आया है','New stock arrived today')}]}];
+  let open=null,draft='',go=()=>{};const ev=(a,b)=>go(a,b);
+  const EMO=/\p{Extended_Pictographic}/u;
+  function list(){L.innerHTML='';P.forEach(p=>{const b=el('button','cperson'+(open===p?' on':''));
+    b.innerHTML='<span class="av">'+p.av+'</span><span class="nm"></span>'+(p.unread?'<span class="unread">'+p.unread+'</span>':'');b.querySelector('.nm').textContent=p.name;
+    b.addEventListener('click',()=>{open=p;p.unread=0;draft='';list();main();ev('openchat',p.id);});L.appendChild(b);});}
+  function send(text,pic){const p=open;p.m.push({me:1,t:text,pic});main();
+    api.later(()=>{p.m.push({t:t('धन्यवाद! 👍','Thank you! 👍')});if(open===p)main();},900);}
+  function main(){M.innerHTML='';
+    if(!open){const e=el('div','cempty');e.textContent=t('बाएँ किसी चैट पर क्लिक करो','Click a chat on the left');M.appendChild(e);return;}
+    const h=el('div','chead');h.textContent=open.av+' '+open.name;const ms=el('div','msgs');
+    open.m.forEach(x=>{const d=el('div','msg'+(x.me?' me':'')+(x.pic?' pic':''));d.textContent=x.t;ms.appendChild(d);});
+    const bar=el('div','cbar'),em=el('button','wbtn'),at=el('button','wbtn'),inp=el('input','cin'),sd=el('button','wbtn');
+    em.textContent='😊';at.textContent='📎';sd.textContent='➤';em.setAttribute('aria-label',t('इमोजी','Emoji'));at.setAttribute('aria-label',t('फ़ाइल जोड़ो','Attach'));sd.setAttribute('aria-label',t('भेजो','Send'));
+    inp.placeholder=t('संदेश लिखो','Type a message');inp.value=draft;inp.setAttribute('aria-label',t('संदेश','Message'));
+    inp.addEventListener('input',()=>{draft=inp.value;});
+    const doSend=()=>{const v=draft.trim();if(!v)return;draft='';const id=open.id;send(v);ev('sent',{id,text:v,emoji:EMO.test(v)});};
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doSend();}});sd.addEventListener('click',doSend);
+    const pop=(cls,items)=>{const o=M.querySelector('.pop');if(o){o.remove();return;}const p=el('div','pop '+cls);items.forEach(([lab,fn])=>{const b=el('button');b.textContent=lab;b.addEventListener('click',()=>{p.remove();fn();});p.appendChild(b);});M.appendChild(p);};
+    em.addEventListener('click',()=>pop('',['🙏','👍','😊','🍎','🥭','🚚','✅','❤️'].map(x=>[x,()=>{draft+=x;main();const i=M.querySelector('.cin');i.focus();}])));
+    at.addEventListener('click',()=>pop('att',[['🖼️ '+t('दुकान की फ़ोटो','Shop photo'),()=>{send('🏪',true);ev('attach','photo');}],['📄 '+t('बिल.pdf','Bill.pdf'),()=>{send('📄 '+t('बिल.pdf','Bill.pdf'));ev('attach','bill');}]]));
+    bar.append(em,at,inp,sd);M.append(h,ms,bar);ms.scrollTop=ms.scrollHeight;inp.focus();}
+  go=stepper(api,[
+    {t:t('बाएँ “राम भैया” पर क्लिक करो','Click “Ram bhaiya” on the left'),ok:(ty,i)=>ty==='openchat'&&i==='ram'},
+    {t:t('जवाब लिखो, जैसे: Thik hai, 30 minute mein aa jayega, फिर Enter','Type a reply, like: OK, it will arrive in 30 minutes, then press Enter'),ok:(ty,i)=>ty==='sent'&&i.id==='ram'&&i.text.length>=5},
+    {t:t('😊 दबाओ, कोई इमोजी चुनो, फिर ➤ दबाओ','Press 😊, pick an emoji, then press ➤'),ok:(ty,i)=>ty==='sent'&&i.id==='ram'&&i.emoji},
+    {t:t('📎 दबाओ और “दुकान की फ़ोटो” भेजो','Press 📎 and send “Shop photo”'),ok:(ty,i)=>ty==='attach'&&i==='photo'},
+    {t:t('अब “सीता दीदी” की चैट खोलो और जवाब भेजो, जैसे: Haan, 7 baje tak','Now open “Sita didi” and send a reply, like: Yes, till 7'),ok:(ty,i)=>ty==='sent'&&i.id==='sita'}],st);
+  list();main();
+}},
+/* 24 */{world:5,boss:true,ic:'👑',title:['बॉस: शॉर्टकट क्विज़','Boss: shortcut quiz'],
+start(api){
+  const st=api.stage;st.classList.add('pad');
+  const K=s=>s.split('+').map(x=>'<kbd>'+x+'</kbd>').join(' + ');
+  const Q=[['Ctrl+Z',t('ग़लती वापस लो (undo)','Undo a mistake')],['Ctrl+S',t('काम सेव करो','Save your work')],['Ctrl+P',t('प्रिंट करो','Print')],
+    ['Ctrl+F',t('पेज में शब्द ढूँढो','Find a word on the page')],['Alt+Tab',t('एक खिड़की से दूसरी खिड़की पर जाओ','Switch to another window')],
+    ['Win+D',t('सब छुपाकर डेस्कटॉप दिखाओ','Hide everything, show the desktop')],['Ctrl+W',t('Chrome का एक टैब बंद करो','Close one Chrome tab')],
+    ['Alt+F4',t('पूरी खिड़की (ऐप) बंद करो','Close the whole window (app)')],['Win+Shift+S',t('स्क्रीन की फ़ोटो (स्क्रीनशॉट) लो','Take a screenshot')],
+    ['Win+L',t('लैपटॉप लॉक करो','Lock the laptop')],['Win+E',t('फ़ोल्डर (File Explorer) खोलो','Open folders (File Explorer)')],['Ctrl+T',t('Chrome में नया टैब खोलो','Open a new Chrome tab')]];
+  const order=shuffle(Q),total=order.length;let n=0;
+  function show(){const [k,a]=order[n];let tried=false;
+    const wrong=shuffle(Q.filter(q=>q[1]!==a)).slice(0,3).map(q=>q[1]);
+    st.innerHTML='<div class="q">'+t(K(k)+' क्या करता है?','What does '+K(k)+' do?')+'</div>';const box=el('div','opts');
+    shuffle([a,...wrong]).forEach(o=>{const b=el('button','opt');b.textContent=o;
+      b.addEventListener('click',()=>{if(o===a){b.classList.add('right');if(!tried)api.good(t('सही!','Right!'));else{ding();api.say(t('सही। अब याद रखना','Right. Remember it now'));}
+          n++;api.progress(n,total);box.querySelectorAll('button').forEach(x=>x.disabled=true);setTimeout(()=>{if(n>=total)api.finish();else show();},700);}
+        else{tried=true;b.classList.add('wrong');b.disabled=true;api.bad(t('नहीं। फिर सोचो','No. Think again'));}});
+      box.appendChild(b);});
+    st.appendChild(box);api.task(t('सही जवाब चुनो','Pick the right answer'));}
+  api.progress(0,total);show();
+}},
+/* 25 */{world:6,ic:'💻',title:['असली लैपटॉप: रोज़ के काम','Real laptop: everyday tasks'],check:true,
+items:()=>[
+  [t('लैपटॉप ऑन करना','Turning the laptop on'),t('पावर बटन एक बार दबाओ (कीबोर्ड के ऊपर या साइड में)|थोड़ा रुको, फिर PIN या पासवर्ड डालो|Enter दबाओ','Press the power button once (above the keyboard or on the side)|Wait a little, then type your PIN or password|Press Enter')],
+  [t('Wi-Fi जोड़ना','Connecting Wi-Fi'),t('नीचे दाएँ कोने में Wi-Fi का निशान क्लिक करो|अपने Wi-Fi का नाम चुनो|Connect दबाओ और पासवर्ड लिखो','Click the Wi-Fi sign in the bottom-right corner|Choose your Wi-Fi name|Press Connect and type the password')],
+  [t('आवाज़ और रोशनी','Sound and brightness'),t('नीचे दाएँ स्पीकर का निशान क्लिक करो|लाइन खींचकर आवाज़ कम-ज़्यादा करो|रोशनी भी वहीं से बदलो','Click the speaker sign at the bottom right|Drag the line to change the volume|Change brightness from the same place')],
+  [t('फ़ोल्डर खोलना','Opening folders'),t('<kbd>Win</kbd> + <kbd>E</kbd> दबाओ, File Explorer खुलेगा|बाएँ तरफ़ Downloads, Pictures या Videos पर क्लिक करो|किसी फ़ोल्डर पर डबल क्लिक करो','Press <kbd>Win</kbd> + <kbd>E</kbd> to open File Explorer|Click Downloads, Pictures or Videos on the left|Double-click any folder')],
+  [t('मूवी चलाना','Playing a movie'),t('मूवी वाला फ़ोल्डर खोलो (पेनड्राइव भी लगा सकते हो)|मूवी फ़ाइल पर डबल क्लिक करो|नीचे के बटन से रोको, चलाओ, आवाज़ बदलो','Open the folder with the movie (or plug in a pen drive)|Double-click the movie file|Use the buttons at the bottom to pause, play and change the volume')],
+  [t('Chrome खोलना','Opening Chrome'),t('नीचे टास्कबार में Chrome का गोल रंगीन निशान क्लिक करो|या Windows बटन दबाओ, “chrome” लिखो, Enter','Click the round colourful Chrome sign on the taskbar|Or press the Windows key, type “chrome”, press Enter')],
+  [t('YouTube पर गाना','A song on YouTube'),t('Chrome में ऊपर लिखो: youtube.com, फिर Enter|सर्च में गाने का नाम लिखो, Enter|किसी वीडियो पर क्लिक करो','In Chrome, type youtube.com at the top and press Enter|Type the song name in search, press Enter|Click a video')],
+  [t('खिड़की छोटी, बड़ी, बंद','Window: small, big, close'),t('ऊपर दाएँ तीन बटन हैं|_ से छोटी, ▢ से बड़ी, ✕ से बंद','There are three buttons at the top right|_ makes it small, ▢ makes it big, ✕ closes it')],
+  [t('असली शॉर्टकट','Real shortcuts'),t('<kbd>Win</kbd> + <kbd>D</kbd> दबाओ, सब छुप जाएगा, फिर से दबाओ|दो ऐप खोलो, <kbd>Alt</kbd> पकड़ो और <kbd>Tab</kbd> दबाओ','Press <kbd>Win</kbd> + <kbd>D</kbd>, everything hides, press again|Open two apps, hold <kbd>Alt</kbd> and press <kbd>Tab</kbd>')]
+]},
+/* 26 */{world:6,ic:'🗄️',title:['असली लैपटॉप: फ़ाइल, Paint, बंद करना','Real laptop: files, Paint, shutting down'],check:true,
+items:()=>[
+  [t('फ़ोल्डर बनाना','Making a folder'),t('डेस्कटॉप पर ख़ाली जगह RIGHT क्लिक करो|New → Folder चुनो|नाम लिखो और Enter','Right-click an empty part of the desktop|Choose New → Folder|Type a name and press Enter')],
+  [t('फ़ाइल कॉपी-पेस्ट','Copy-paste a file'),t('फ़ाइल पर RIGHT क्लिक → Copy (Windows 11 में ऊपर छोटा निशान भी हो सकता है)|दूसरा फ़ोल्डर खोलो, ख़ाली जगह RIGHT क्लिक → Paste|या: फ़ाइल चुनो, <kbd>Ctrl</kbd> + <kbd>C</kbd>, फिर दूसरे फ़ोल्डर में <kbd>Ctrl</kbd> + <kbd>V</kbd>','Right-click the file → Copy (on Windows 11 it may be a small icon at the top)|Open another folder, right-click an empty space → Paste|Or: select the file, <kbd>Ctrl</kbd> + <kbd>C</kbd>, then <kbd>Ctrl</kbd> + <kbd>V</kbd> in the other folder')],
+  [t('Paint में ड्रॉइंग','Drawing in Paint'),t('Windows बटन दबाओ, “paint” लिखो, Enter|Brush से कुछ बनाओ, बाल्टी (Fill) से रंग भरो|<kbd>Ctrl</kbd> + <kbd>S</kbd> दबाओ, नाम लिखो, Save','Press the Windows key, type “paint”, press Enter|Draw with the brush, fill colour with the bucket (Fill)|Press <kbd>Ctrl</kbd> + <kbd>S</kbd>, type a name, Save')],
+  [t('फ़ाइल ढूँढना','Finding a file'),t('Windows बटन दबाओ|फ़ाइल का नाम लिखो|ऊपर जो आए उस पर क्लिक करो','Press the Windows key|Type the file name|Click the top result')],
+  [t('स्क्रीनशॉट लेना','Taking a screenshot'),t('<kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> दबाओ|माउस से हिस्सा खींचो|Paint खोलकर <kbd>Ctrl</kbd> + <kbd>V</kbd> दबाओ','Press <kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>|Drag over the part you want|Open Paint and press <kbd>Ctrl</kbd> + <kbd>V</kbd>')],
+  [t('डिलीट और वापस लाना','Delete and bring back'),t('एक फ़ाइल चुनो, Delete दबाओ|डेस्कटॉप पर Recycle Bin खोलो|फ़ाइल पर RIGHT क्लिक → Restore','Select a file, press Delete|Open Recycle Bin on the desktop|Right-click the file → Restore')],
+  [t('लॉक करना','Locking'),t('<kbd>Win</kbd> + <kbd>L</kbd> दबाओ|वापस आने के लिए PIN डालो','Press <kbd>Win</kbd> + <kbd>L</kbd>|Type your PIN to come back')],
+  [t('सही तरीक़े से बंद करना','Shutting down properly'),t('Windows बटन → Power का निशान → Shut down|पावर बटन दबाकर ज़बरदस्ती बंद मत करो','Windows key → Power sign → Shut down|Don’t force it off with the power button')]
+]},
+/* 27 */{world:6,ic:'🌍',title:['असली लैपटॉप: इंटरनेट','Real laptop: the internet'],check:true,
+items:()=>[
+  [t('Google पर खोजना','Searching on Google'),t('Chrome खोलो|ऊपर पट्टी में जो ढूँढना है लिखो, Enter|नीले लिंक पर क्लिक करो, “Ad” या “Sponsored” वाले पर नहीं','Open Chrome|Type what you want in the bar at the top, press Enter|Click a blue link, not one marked “Ad” or “Sponsored”')],
+  [t('फ़ोटो डाउनलोड करना','Downloading a photo'),t('फ़ोटो पर RIGHT क्लिक → “Save image as”|जगह चुनो (जैसे Pictures), Save|<kbd>Win</kbd> + <kbd>E</kbd> से Pictures फ़ोल्डर में देखो','Right-click a photo → “Save image as”|Choose a place (like Pictures), Save|Check the Pictures folder with <kbd>Win</kbd> + <kbd>E</kbd>')],
+  [t('WhatsApp लैपटॉप पर','WhatsApp on the laptop'),t('Chrome में web.whatsapp.com खोलो|फ़ोन पर WhatsApp → ⋮ → Linked devices → Link a device|फ़ोन से लैपटॉप की स्क्रीन वाला QR कोड स्कैन करो','Open web.whatsapp.com in Chrome|On the phone: WhatsApp → ⋮ → Linked devices → Link a device|Scan the QR code on the laptop screen with the phone')],
+  [t('YouTube फ़ुल स्क्रीन','YouTube full screen'),t('वीडियो चलाओ|<kbd>F</kbd> दबाओ, स्क्रीन भर जाएगी|<kbd>Esc</kbd> दबाकर वापस','Play a video|Press <kbd>F</kbd> to fill the screen|Press <kbd>Esc</kbd> to go back')],
+  [t('धोखे से बचना','Staying safe'),t('“इनाम जीतो” या “आपका खाता बंद होगा” वाले लिंक पर क्लिक मत करो|OTP या पासवर्ड किसी को मत बताओ, फ़ोन पर भी नहीं|अनजान फ़ाइल डाउनलोड मत करो','Don’t click “you won a prize” or “your account will close” links|Never tell anyone your OTP or password, not even on the phone|Don’t download unknown files')]
+]}
+];
+LEVELS.forEach(L=>{if(L.check)L.start=function(api){
+  const st=api.stage;st.classList.add('pad');
+  const note=el('p','note');note.textContent=t('ये काम असली लैपटॉप पर करने हैं, इस पेज के बाहर। पहली बार किसी के साथ बैठकर करो। हर काम हो जाए तो “हो गया” दबाओ। (Windows के version के हिसाब से निशान थोड़े अलग दिख सकते हैं।)','Do these on the real laptop, outside this page. Do them with someone the first time. Press “Done” after each one. (Icons can look a little different depending on your Windows version.)');
+  st.appendChild(note);
+  const items=L.items(),total=items.length;let n=0;
+  items.forEach((it,i)=>{const d=el('details','chk');if(i===0)d.open=true;
+    d.innerHTML='<summary>'+it[0]+'</summary><ol>'+it[1].split('|').map(s=>'<li>'+s+'</li>').join('')+'</ol>';
+    const b=el('button','btn');b.textContent=t('हो गया ✓','Done ✓');
+    b.addEventListener('click',()=>{d.classList.add('did');b.disabled=true;d.open=false;n++;api.good();api.progress(n,total);
+      const nx=d.nextElementSibling;if(nx&&nx.tagName==='DETAILS')nx.open=true;if(n>=total)api.later(api.finish,400);});
+    d.appendChild(b);st.appendChild(d);});
+  api.task(t('एक-एक करके काम करो','Do them one by one'));api.progress(0,total);
+};});
+
+const WORLDS={
+  1:[['माउस की दुनिया','Mouse world'],['क्लिक, डबल क्लिक, राइट क्लिक, खींचना, स्क्रॉल','Click, double-click, right-click, drag, scroll'],['🖱️','माउस मास्टर','Mouse master']],
+  2:[['ड्रॉइंग की दुनिया','Drawing world'],['बिंदु जोड़ो, रंग भरो, शब्द चुनो','Join dots, fill colours, select words'],['🎨','कलाकार','Artist']],
+  3:[['कीबोर्ड की दुनिया','Keyboard world'],['अक्षर, ख़ास बटन, शब्द और वाक्य','Letters, special keys, words and sentences'],['⌨️','टाइपिंग वीर','Typing hero']],
+  4:[['अभ्यास वाला कंप्यूटर','Practice computer'],['फ़ोल्डर, मूवी, कॉपी-पेस्ट, खिड़कियाँ, सेव करना। यहाँ कुछ ख़राब नहीं होगा।','Folders, movies, copy-paste, windows, saving. Nothing here can break.'],['📁','फ़ाइल उस्ताद','File expert']],
+  5:[['इंटरनेट की दुनिया','Internet world'],['ब्राउज़र, टैब, चैट और धोखे से बचना','Browser, tabs, chat and avoiding scams'],['🌐','इंटरनेट समझदार','Internet smart']],
+  6:[['असली लैपटॉप','The real laptop'],['इस पेज के बाहर, असली Windows पर','Outside this page, on real Windows'],['🏆','लैपटॉप चैंपियन','Laptop champion']]};
+const OFFS=[0,.6,1,.6,0,-.6,-1,-.6];
+
+/* ---------- HOME ---------- */
+const isOpen=i=>i===0||!!state.done[i]||!!state.done[i-1];
+const coinsOf=i=>(state.done[i]||0)*10*(LEVELS[i].boss?2:1);
+const worldDone=w=>LEVELS.every((L,i)=>L.world!==w||state.done[i]);
+const nextStage=()=>{for(let i=0;i<LEVELS.length;i++)if(!state.done[i])return i;return -1;};
+function applyLang(){
+  document.documentElement.lang=state.lang==='en'?'en':'hi';
+  $('lhi').classList.toggle('on',state.lang!=='en');$('len').classList.toggle('on',state.lang==='en');
+  $('h1').innerHTML=t('लैपटॉप<span>सीखो</span>','Learn the<span>laptop</span>');
+  $('heroP').textContent=t('6 दुनिया, '+LEVELS.length+' स्टेज। हर स्टेज जीतो, सिक्के कमाओ, अगला स्टेज खुलेगा। रोज़ 20 मिनट।','6 worlds, '+LEVELS.length+' stages. Clear each stage, earn coins, unlock the next. 20 minutes a day.');
+  $('tip').textContent=t('3 सितारे न आएँ तो वही स्टेज कल फिर खेलो। 👑 वाले बॉस स्टेज में दोगुने सिक्के मिलते हैं।','No 3 stars? Play the same stage again tomorrow. 👑 boss stages give double coins.');
+  $('soundBtn').textContent=state.sound?t('आवाज़: चालू','Sound: on'):t('आवाज़: बंद','Sound: off');
+  $('resetBtn').textContent=t('सारा progress मिटाओ','Erase all progress');
+  $('backBtn').textContent=t('‹ नक्शा','‹ Map');$('againBtn').textContent=t('फिर से खेलो','Play again');
+  $('nextBtn').textContent=t('अगला स्टेज ▶','Next stage ▶');$('homeBtn').textContent=t('नक्शा देखो','See the map');
+}
+function renderHome(){
+  applyLang();
+  const stars=LEVELS.reduce((s,L,i)=>s+(state.done[i]||0),0),coins=LEVELS.reduce((s,L,i)=>s+coinsOf(i),0),badges=[1,2,3,4,5,6].filter(worldDone).length;
+  const hud=$('hud');hud.innerHTML='';
+  [['🪙 '+coins],['⭐ '+stars+' / '+LEVELS.length*3],['🏅 '+badges+' / 6']].forEach(x=>{const c=el('span','chip');c.textContent=x[0];hud.appendChild(c);});
+  const ns=nextStage(),gb=$('goBtn');
+  gb.textContent=ns<0?t('सब स्टेज पूरे! 🏆','All stages cleared! 🏆'):t('▶ खेलो: स्टेज ','▶ Play: stage ')+(ns+1);
+  gb.disabled=ns<0;gb.onclick=()=>{if(ns>=0)runLevel(ns);};
+  const w=$('weeks');w.innerHTML='';
+  [1,2,3,4,5,6].forEach(k=>{
+    const s=el('div','world'),hd=el('div','whead'),bd=el('div','badge'+(worldDone(k)?' got':''));
+    bd.textContent=WORLDS[k][2][0];bd.title=tt(WORLDS[k][2].slice(1));
+    const tx=el('div');tx.innerHTML='<h2></h2><p></p>';tx.querySelector('h2').textContent=tt(WORLDS[k][0]);
+    const cnt=LEVELS.filter((L,i)=>L.world===k&&state.done[i]).length,all=LEVELS.filter(L=>L.world===k).length;
+    tx.querySelector('p').textContent=tt(WORLDS[k][1])+'  ('+cnt+'/'+all+')';
+    hd.append(bd,tx);s.appendChild(hd);
+    const p=el('div','path');let j=0;
+    LEVELS.forEach((L,i)=>{if(L.world!==k)return;
+      const open=isOpen(i),sc=state.done[i]||0;
+      const b=el('button','stop'+(L.boss?' boss':'')+(open?'':' locked')+(sc?' done':'')+(i===ns?' cur':''));
+      b.style.setProperty('--o',OFFS[j++%OFFS.length]);
+      b.innerHTML='<span class="node">'+(open?L.ic:'🔒')+'<span class="num">'+(i+1)+'</span></span><span class="slabel"><b></b><span>'+(sc?'★'.repeat(sc)+'☆'.repeat(3-sc):'')+'</span><small></small></span>';
+      b.querySelector('b').textContent=tt(L.title);
+      b.querySelector('small').textContent=open?(sc?'🪙 '+coinsOf(i):(L.boss?t('बॉस! दोगुने सिक्के','Boss! Double coins'):t('खेलो','Play'))):t('पिछला स्टेज जीतो','Clear the stage before');
+      b.setAttribute('aria-label',t('स्टेज ','Stage ')+(i+1)+': '+tt(L.title)+(open?'':' ('+t('बंद','locked')+')'));
+      b.addEventListener('click',()=>{if(!open){tone(220,.12);return;}runLevel(i);});
+      p.appendChild(b);});
+    s.appendChild(p);w.appendChild(s);});
+}
+$('lhi').addEventListener('click',()=>{state.lang='hi';save();renderHome();});
+$('len').addEventListener('click',()=>{state.lang='en';save();renderHome();});
+$('soundBtn').addEventListener('click',()=>{state.sound=!state.sound;save();renderHome();});
+$('resetBtn').addEventListener('click',()=>{if(confirm(t('सारे स्टेज का progress मिट जाएगा। पक्का?','All progress will be erased. Sure?'))){state.done={};save();renderHome();}});
+
+/* ---------- PLAY ---------- */
+let cleanups=[],cur=-1,mistakes=0,finished=false,extra='';
+function stopLevel(){cleanups.forEach(f=>{try{f();}catch(e){}});cleanups=[];const st=$('stage');st.innerHTML='';st.className='stage';st.style.cursor='';}
+function runLevel(i){
+  stopLevel();cur=i;mistakes=0;finished=false;extra='';$('result').hidden=true;
+  $('home').hidden=true;$('play').hidden=false;window.scrollTo(0,0);
+  const L=LEVELS[i];$('lvlTitle').textContent=t('स्टेज ','Stage ')+(i+1)+': '+tt(L.title);
+  $('task').textContent='';const fb=$('fb');fb.textContent='';fb.className='fb';
+  const st=$('stage');
+  const api={
+    stage:st,
+    arena(){st.classList.add('arena');},
+    task(x,html){if(html)$('task').innerHTML=x;else $('task').textContent=x;},
+    say(x){fb.textContent=x;fb.className='fb';},
+    good(x){ding();fb.textContent=x||pick(state.lang==='en'?['Well done!','Great!','Correct!','Nice!']:['शाबाश!','बहुत बढ़िया!','सही!','वाह!']);fb.className='fb good';},
+    bad(x){if(finished)return;mistakes++;buzz();fb.textContent=x;fb.className='fb bad';},
+    note(x){extra=x;},
+    progress(n,tot){$('trackFill').style.width=(100*n/tot)+'%';$('count').textContent=n+' / '+tot;},
+    on(tg,ev,fn,o){tg.addEventListener(ev,fn,o);cleanups.push(()=>tg.removeEventListener(ev,fn,o));},
+    later(fn,ms){const id=setTimeout(fn,ms);cleanups.push(()=>clearTimeout(id));},
+    cleanup(fn){cleanups.push(fn);},
+    finish(){if(finished)return;finished=true;
+      const stars=L.check?3:(mistakes<=1?3:mistakes<=4?2:1);
+      const before=coinsOf(i),hadWorld=worldDone(L.world);
+      state.done[i]=Math.max(state.done[i]||0,stars);save();
+      showResult(i,stars,coinsOf(i)-before,!hadWorld&&worldDone(L.world));}
+  };
+  requestAnimationFrame(()=>L.start(api));
+}
+function showResult(i,stars,gained,newWorld){
+  const L=LEVELS[i];
+  $('resStars').textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
+  $('resTitle').textContent=stars===3?t('कमाल कर दिया!','Amazing!'):stars===2?t('अच्छा किया!','Good job!'):t('स्टेज पार!','Stage cleared!');
+  $('resText').textContent=(L.check?t('असली लैपटॉप के काम हो गए।','Real laptop tasks done.'):t('ग़लतियाँ: '+mistakes+'।','Mistakes: '+mistakes+'.')+(stars<3?t(' कल फिर खेलो, 3 सितारे आएँगे।',' Play again tomorrow for 3 stars.'):''))+(extra?' '+extra:'');
+  $('resCoins').textContent=gained>0?'+'+gained+' 🪙':'';
+  const nb=$('resBadge');
+  if(newWorld){const b=WORLDS[L.world][2];nb.hidden=false;nb.innerHTML='<b>'+b[0]+'</b>';nb.append(t('नया बैज: ','New badge: ')+tt(b.slice(1)));}else nb.hidden=true;
+  const nx=$('nextBtn');nx.hidden=i>=LEVELS.length-1;$('result').hidden=false;
+  tone(660,.12);setTimeout(()=>tone(990,.25),120);if(newWorld)setTimeout(()=>{tone(784,.15);setTimeout(()=>tone(1175,.3),150);},400);
+  (nx.hidden?$('homeBtn'):nx).focus();
+}
+function goHome(){stopLevel();$('result').hidden=true;$('play').hidden=true;$('home').hidden=false;renderHome();window.scrollTo(0,0);}
+$('backBtn').addEventListener('click',goHome);
+$('homeBtn').addEventListener('click',goHome);
+$('againBtn').addEventListener('click',()=>runLevel(cur));
+$('nextBtn').addEventListener('click',()=>{if(cur+1<LEVELS.length&&isOpen(cur+1))runLevel(cur+1);else goHome();});
+renderHome();
+})();
+</script>
+</body>
+</html>
